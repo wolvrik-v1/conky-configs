@@ -1,0 +1,74 @@
+Conky Clock Widget
+==================
+original by jpope (v1.1, 2010)
+modernized for Conky 1.12.x on Bodhi/Moksha (2026)
+
+An interactive conky clock. Click the LED on the clock face to view the
+current month calendar; the calendar auto-returns to the clock after 10
+seconds. Re-clicking the LED while the calendar is shown resets the timer.
+
+What changed in the modern version
+----------------------------------
+* Config rewritten from legacy text syntax to the modern
+  `conky.config = { ... }` / `conky.text = [[ ... ]]` Lua table syntax.
+* The original jpope square faces are restored: the clock mode paints
+  `images/bckgnd.png` (brushed-metal square with a round recessed dial)
+  and the calendar mode paints `images/bckgnd_plain.png`. The analog
+  clock is drawn into the dial well; the calendar grid sits on the plain
+  plate. Both shoulders are composited onto an opaque backing in Lua so
+  the desktop never bleeds through the metal.
+* Look follows the "clockface1" design from the original preview: white
+  hour/minute hands (no red second hand), line tick marks (no numerals),
+  month above the dial, day below, and a blue LED.
+* The widget is larger on screen: the conky window is 260x260 while the
+  Lua design grid stays 175x175 and everything is scaled by
+  G.s = min(window/175, window/175). Keep the conky min/max sizes and
+  the btnclockwdgt SCALE constant in sync if you change this.
+* The LED is drawn where the socket dot in the artwork sits (grid 154,155);
+  btnclockwdgt pins its own button to the same spot via the real window
+  geometry, re-asserting keep-above every second.
+* The 10-second calendar timeout is handled inside Lua (uses the
+  'clockswitch' state file timestamp), so the fragile `sleep 10s` shell
+  command is gone.
+* The LED/button no longer depends on theme images. btnclockwdgt is now
+  a small fully-transparent GTK3 window that only catches the click. It
+  pinpoints the LED by reading the conky window's real X geometry each
+  second, so it stays aligned across start-up races and monitor changes.
+* The Python clicker was updated from GTK2 to GTK3 (gi repository) and
+  the old ADesk code was stripped out.
+
+Files
+-----
+conkyclockwdgtrc     conky config (modern syntax; window 260x260)
+conkyclock.lua       Cairo renderer: analog clock + calendar + LED
+btnclockwdgt         GTK3 click overlay that flips the clock/calendar
+conkyclock           start/stop/restart wrapper
+clockswitch          state file ("0" = clock, "1" = calendar) - do not edit
+images/bckgnd.png        square clock face (brushed metal + round well)
+images/bckgnd_plain.png  square calendar plate
+
+Setup
+-----
+1. Run `./conkyclock start` (or `~/.conky/clockwidget/conkyclock start`)
+   to launch the widget together with its click button.
+2. Use `./conkyclock stop` / `./conkyclock restart` as needed.
+   Moksha autostart already calls this from ~/.conky/conky-startup.sh.
+
+Positioning
+-----------
+* The widget sits top-right (gap_x 16, gap_y 50) - edit conkyclockwdgtrc.
+* To move it, change alignment/gap_x/gap_y in the conky config, and the
+  matching GAP_* constants in btnclockwdgt (the button auto-aligns to the
+  drawn LED, but keep the fallback sane).
+* The Lua design grid is 175x175; positions are scaled to the real window
+  size automatically, so different DPI/monitors are fine.
+
+Optional tuning in conkyclock.lua (USER OPTIONS block):
+* CAL_TIMEOUT          seconds the calendar stays visible (default 10)
+* colors (LEDON..LEDRING), clock face radius, LED position, fonts.
+
+References (as in the original)
+----------
+LONDONALI1010   - http://mylittledesktop.blogspot.com/
+mrpeachy        - http://thepeachyblog.blogspot.com
+ADcomp          - http://ad-comp.be/ (ADesk, the basis of btnclockwdgt)

@@ -1,0 +1,45 @@
+#!/bin/sh
+# conkyclock - start / stop / restart the interactive clock widget
+# (modernized from jpope's original launcher)
+#
+# The LED click button is now owned by conky itself: conkyclock.lua
+# (spawn_button) launches/refreshes it whenever conky starts, and the
+# button self-exits ~15s after conky disappears. So this wrapper only
+# has to manage conky - usable with conky-manager as well.
+#
+#   conkyclock start      launch the conky widget (button auto-starts)
+#   conkyclock stop       stop both
+#   conkyclock restart     stop, then start again
+
+DIR="$HOME/.conky/clockwidget"
+LOG="$DIR/btnclockwdgt.log"
+
+start() {
+    conky -d -c "$DIR/conkyclockwdgtrc" </dev/null >>"$LOG" 2>&1
+}
+
+stop() {
+    pkill -f "[c]onky .*conkyclockwdgtrc" 2>/dev/null
+    # dir-scoped pattern so we never touch clockwidget-orig's button
+    pkill -f "clockwidget/btnclockwdgt" 2>/dev/null
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        sleep 1
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

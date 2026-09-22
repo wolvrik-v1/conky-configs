@@ -1,0 +1,44 @@
+#!/bin/sh
+# conkyclock-orig - start / stop / restart the ORIGINAL-face clock widget
+#
+# The LED click button is now owned by conky itself: conkyclock-orig.lua
+# (spawn_button) launches/refreshes it whenever conky starts, and the
+# button self-exits ~15s after conky disappears. So this wrapper only
+# has to manage conky - usable with conky-manager as well.
+#
+#   conkyclock-orig start      launch the conky widget (button auto-starts)
+#   conkyclock-orig stop       stop both
+#   conkyclock-orig restart    stop, then start again
+
+DIR="$HOME/.conky/clockwidget-orig"
+LOG="$DIR/btnclockwdgt-orig.log"
+
+start() {
+    conky -d -c "$DIR/conkyclock-origwdgtrc" </dev/null >>"$LOG" 2>&1
+}
+
+stop() {
+    pkill -f "[c]onky .*conkyclock-origwdgtrc" 2>/dev/null
+    # dir-scoped pattern so we never touch clockwidget's button
+    pkill -f "clockwidget-orig/btnclockwdgt-orig" 2>/dev/null
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        sleep 1
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

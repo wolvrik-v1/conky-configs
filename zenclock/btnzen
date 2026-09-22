@@ -1,0 +1,248 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#  Zen Meditation Clock - timer control overlay
+#
+#  Fully transparent GTK3 dock window parked inside the bottom of the
+#  zenclock conky widget. The button VISUALS are drawn by conkyzen.lua
+#  (Moksha does not composite the rgba paint of dock windows, so the
+#  button strip is drawn by the conky widget itself, exactly like the
+#  LED of the clock widget). This script is invisible; it only catches
+#  clicks on the three hotspots:
+#      START/PAUSE  - start or pause/resume the meditation count-up
+#      RESET        - clear the timer back to idle
+#      GOAL         - cycle goal length (off / 5-10-15-20-30-45-60 min)
+#  Each click writes to the 'zentimer' state file that conkyzen.lua
+#  reads; Lua owns the gong triggers (start / finish / periodic chime).
+#
+#  State file lines:
+#      line 1: mode    "idle"|"run"|"pause"|"done"
+#      line 2: start   epoch when the timer began the current run (0 else)
+#      line 3: pauseE  epoch when paused (0 else)
+#      line 4: accum   elapsed seconds banked across pauses
+#      line 5: goal    goal length in seconds (0 = count-up only)
+#
+#  Conky owns the button lifecycle (spawn from conkyzen.lua); this
+#  script self-exits ~15s after its conky window disappears.
+#
+#  Usage: btnzen
+#    -c CMD   (optional) run CMD instead of writing the state file
+import os
+import sys
+import time
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GLib
+
+## -- geometry -- keep in sync with conkyzenrc and conkyzen.lua -- ##
+WIN_W   = 280                       # conky window size (equals design grid)
+WIN_H   = 400
+BTN_W   = 76                        # button size (grid units)
+BTN_H   = 28
+BTN_TOP = 0.825                     # strip top row as a fraction of window height
+BTN_Y   = 350                       # button row center, grid units (conkyzen.lua)
+START_X = 0.5 - 100/280.0           # button centers, as a fraction of window width
+RESET_X = 0.5
+GOAL_X  = 0.5 + 100/280.0
+STATE_FILE = os.path.expanduser('~/.conky/zenclock/zentimer')
+
+GOALS = [0, 300, 600, 900, 1200, 1800, 2700, 3600]   # off + presets (s)
+
+def read_state():
+    """Return dict with current mode/goal etc (best-effort)."""
+    s = {'mode': 'idle', 'start': 0, 'pause': 0, 'accum': 0, 'goal': 0}
+    try:
+        with open(STATE_FILE) as f:
+            lines = [l.strip() for l in f.readlines()][:5]
+        while len(lines) < 5:
+            lines.append('0')
+        s['mode']  = lines[0]
+        s['start'] = int(float(lines[1]))
+        s['pause'] = int(float(lines[2]))
+        s['accum'] = int(float(lines[3]))
+        s['goal']  = int(float(lines[4]))
+    except (OSError, ValueError):
+        pass
+    return s
+
+def write_state(mode, start, pause, accum, goal):
+    try:
+        with open(STATE_FILE, 'w') as f:
+            f.write('%s\n%d\n%d\n%d\n%d\n' %
+                    (mode, int(start), int(pause), int(accum), int(goal)))
+    except OSError as err:
+        print('could not write %s: %s' % (STATE_FILE, err), file=sys.stderr)
+
+def elapsed_now(s):
+    if s['mode'] == 'run':
+        return s['accum'] + (int(time.time()) - s['start'])
+    return s['accum']
+
+def goal_label(goal):
+    if goal <= 0:
+        return 'GOAL off'
+    return 'GOAL %dm' % (goal // 60)
+
+
+def conky_window_geometry():
+    """Get (x, y, w, h) of the zenclock conky window via X, or None."""
+    import re
+    try:
+        from subprocess import check_output
+        tree = check_output(['xwininfo', '-root', '-tree'],
+                            universal_newlines=True)
+        for line in tree.splitlines():
+            # match only the conky widget (instance+class both "conky-zenclock"),
+            # not the button's own window ("conky-zenclock-led")
+            if '"conky-zenclock" "conky-zenclock"' not in line:
+                continue
+            m = re.search(r'(\d+)x(\d+)\+(\-?\d+)\+(\-?\d+).*?([\+\-]\d+)([\+\-]\d+)$',
+                          line)
+            if m:
+                w, h = int(m.group(1)), int(m.group(2))
+                x, y = int(m.group(5)), int(m.group(6))
+                return (x, y, w, h)
+    except Exception:
+        pass
+    return None
+
+
+class UI:
+    def __init__(self, cmd=None):
+        self.cmd = cmd
+        self.geo = None
+        self.hover = None
+
+        self.win = Gtk.Window()
+        self.win.set_title('conky-zenclock-led')
+        self.win.set_type_hint(Gdk.WindowTypeHint.DOCK)
+        # must hover above the dock-type conky window to receive clicks
+        self.win.set_keep_above(True)
+        self.win.set_decorated(False)
+        self.win.set_skip_taskbar_hint(True)
+        self.win.set_skip_pager_hint(True)
+        self.win.stick()
+        self.win.set_app_paintable(True)
+        self.win.set_accept_focus(False)
+
+        screen = self.win.get_screen()
+        if screen.get_rgba_visual() is not None:
+            self.win.set_visual(screen.get_rgba_visual())
+
+        self.win.connect('destroy', Gtk.main_quit)
+
+        self.eventbox = Gtk.EventBox()
+        self.eventbox.set_visible_window(False)
+        self.eventbox.set_above_child(False)
+        self.eventbox.add_events(
+            Gdk.EventMask.BUTTON_PRESS_MASK |
+            Gdk.EventMask.BUTTON_RELEASE_MASK |
+            Gdk.EventMask.BUTTON1_MOTION_MASK |
+            Gdk.EventMask.POINTER_MOTION_MASK |
+            Gdk.EventMask.LEAVE_NOTIFY_MASK)
+        self.eventbox.connect('button_press_event', self.press)
+        self.eventbox.connect('motion_notify_event', self.motion)
+        self.eventbox.connect('leave_notify_event', lambda *_: self._set_hover(None))
+        self.win.add(self.eventbox)
+        self.win.show_all()
+        GLib.timeout_add_seconds(1, self.reposition)
+
+    # -- geometry -------------------------------------------------
+    def button_rects(self, w, h):
+        # buttons are drawn by conky at grid (START_X,RESET_X,GOAL_X)*w, BTN_Y.
+        # The overlay strip starts at grid y = BTN_TOP*h, so map the button
+        # row (grid y = BTN_Y) into overlay-local coordinates.
+        s = w / WIN_W
+        dy = int(BTN_TOP * WIN_H * s)
+        row_y = int(BTN_Y * s) - dy
+        bw, bh = int(BTN_W * s), int(BTN_H * s)
+        out = []
+        for fx in (START_X, RESET_X, GOAL_X):
+            cx = int(w * fx)
+            out.append((cx - bw // 2, row_y - bh // 2, bw, bh))
+        return out
+
+    def reposition(self):
+        # conky may re-map above us (restart races); re-assert stacking so
+        # the hotspots stay clickable
+        self.win.set_keep_above(True)
+        geo = conky_window_geometry()
+        if geo is None:
+            # conky went away - self-exit once it stays gone; conky's Lua
+            # startup hook respawns us next time
+            self.missing = getattr(self, 'missing', 0) + 1
+            if self.missing > 15:
+                Gtk.main_quit()
+                return False
+            return True
+        self.missing = 0
+        self.geo = geo
+        x, y, w, h = geo
+        # overlay covers the button strip row inside the widget
+        tw, th = w, int(h * (1 - BTN_TOP))
+        tx, ty = x, y + int(h * BTN_TOP)
+        cx, cy = self.win.get_position()
+        if abs(cx - tx) > 2 or abs(cy - ty) > 2:
+            self.win.move(tx, ty)
+        if self.win.get_allocated_width() != tw or self.win.get_allocated_height() != th:
+            self.win.resize(tw, th)
+        self.win.queue_draw()
+        return True
+
+    # -- events ---------------------------------------------------
+    def _set_hover(self, idx):
+        if self.hover != idx:
+            self.hover = idx
+            if self.cmd:
+                self.win.queue_draw()
+
+    def _hit(self, x, y):
+        aw, ah = self.win.get_allocated_width(), self.win.get_allocated_height()
+        for i, (bx, by, bw, bh) in enumerate(self.button_rects(aw, ah)):
+            if bx <= x <= bx + bw and by <= y <= by + bh:
+                return i
+        return None
+
+    def motion(self, w, ev):
+        self._set_hover(self._hit(int(ev.x), int(ev.y)))
+
+    def press(self, w, ev):
+        idx = self._hit(int(ev.x), int(ev.y))
+        if ev.button == 2:
+            Gtk.main_quit()
+            return True
+        if idx is None:
+            return True
+        if self.cmd:
+            os.system('%s &' % self.cmd)
+            return True
+        s = read_state()
+        if idx == 0:                # START / PAUSE toggle
+            if s['mode'] in ('idle', 'done'):
+                write_state('run', int(time.time()), 0, 0, s['goal'])
+            elif s['mode'] == 'run':
+                write_state('pause', 0, int(time.time()), elapsed_now(s), s['goal'])
+            elif s['mode'] == 'pause':
+                write_state('run', int(time.time()), 0, s['accum'], s['goal'])
+        elif idx == 1:              # RESET
+            write_state('idle', 0, 0, 0, s['goal'])
+        elif idx == 2:              # GOAL cycle
+            g = GOALS[0]
+            for k in GOALS:
+                if k > s['goal']:
+                    g = k
+                    break
+            write_state('idle', 0, 0, 0, g)
+
+
+def main():
+    cmd = None
+    args = sys.argv[1:]
+    if args and args[0] == '-c':
+        cmd = args[1]
+    app = UI(cmd)
+    Gtk.main()
+
+
+if __name__ == '__main__':
+    main()
