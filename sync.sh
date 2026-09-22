@@ -16,19 +16,17 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 
 # "repo-theme-name<TAB>live-source-directory"
 PAIRS="
-metalsysmonitor		$HOME/.conky/metalsysmonitor
+metal-sysmon		$HOME/.conky/metal-sysmon
+metal-pianobar		$HOME/.config/metal-pianobar
+metal-clock		$HOME/.conky/metal-clock
+etched			$HOME/.conky/etched
+etched-pianobar		$HOME/.config/etched-pianobar
+etched-weather		$HOME/.config/etched-weather
+cyber-deck		$HOME/.conky/cyber-deck
+cyber-radar		$HOME/.conky/cyber-radar
+clockwidget		$HOME/.conky/clockwidget
 clockwork-alchemist	$HOME/.conky/clockwork-alchemist
 bionic			$HOME/.conky/bionic
-cyberdeck		$HOME/.conky/cyberdeck
-adsbradar		$HOME/.conky/adsbradar
-zenclock		$HOME/.conky/zenclock
-clockwidget		$HOME/.conky/clockwidget
-clockwidget-orig	$HOME/.conky/clockwidget-orig
-etched			$HOME/.conky/Etched_conky_large
-alfirk			$HOME/.conky/Alfirk
-pickle-pianobar		$HOME/.config/pickle-pianobar-widget
-pickle-weather		$HOME/.config/pickle-weather-widget
-metal-pianobar		$HOME/.config/metal-pianobar-conky
 "
 
 EXCL=()
@@ -49,7 +47,6 @@ add_excl '*.pyc'
 add_excl 'openweather.key'
 add_excl '*.key'
 add_excl 'clockswitch'
-add_excl 'zentimer'
 add_excl 'fav_check.png'
 add_excl 'preview.jpg'
 add_excl 'README.md'

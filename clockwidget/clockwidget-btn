@@ -1,0 +1,212 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+##
+#  Conky Clock Widget - LED click button
+#  (modernized from jpope's btnclockwdgt, which was based on ADesk)
+#
+#  A tiny, fully transparent GTK3 overlay window parked exactly on top of
+#  the LED that clockwidget.lua draws. Clicking it flips the widget from
+#  the analog clock to the calendar. There are no theme images any more:
+#  the LED itself is drawn by Lua/Cairo, this script only catches clicks.
+#
+#  On click it writes to the 'clockswitch' state file:
+#      line 1  -> "1" (show calendar)
+#      line 2  -> epoch timestamp (lets Lua extend the auto-return timer)
+#  clockwidget.lua handles the auto-return to the clock after 10 seconds.
+#
+#  Usage: clockwidget-btn [-x PIX] [-y PIX] [-s WxH] [-c CMD] [-t THEME]
+#    x/y/s/t/c are kept for backward compatibility with the old script.
+#    Default button position is derived from the widget layout below.
+##
+
+import os
+import re
+import sys
+import time
+import getopt
+import subprocess
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GLib
+
+## -- geometry -- keep in sync with clockwidgetrc and clockwidget.lua -- ##
+WINDOW_W  = 175                      # Lua design grid size (all coords live here)
+WINDOW_H  = 175
+SCALE     = 260 / 175                # conky window size / design grid
+GAP_X     = 16                       # conky alignment = top_right
+GAP_Y     = 50
+LED_X     = 154                      # LED center in the design grid; matches
+LED_Y     = 155                      # the socket dot baked into bckgnd*.png
+BUTTON_SIZE = 26                     # clickable spot around the LED
+SWITCH_FILE = os.path.expanduser('~/.conky/clockwidget/clockswitch')
+## ---------------------------------------------------------------------- ##
+
+
+def conky_window_geometry():
+    """Get (x, y, w, h) of the conky widget window via X, or None."""
+    try:
+        out = subprocess.check_output(['xwininfo', '-root', '-tree'], timeout=10,
+                                      stderr=subprocess.DEVNULL).decode('utf-8', 'replace')
+    except Exception:
+        return None
+    for line in out.splitlines():
+        # match only the conky widget (instance+class both "conky-clockwidget"),
+        # not the button's own window ("conky-clockwidget-led")
+        if '"conky-clockwidget" "conky-clockwidget"' in line:
+            m = re.search(r'(\d+)x(\d+)\+(-?\d+)\+(-?\d+)\s+\+(-?\d+)\+(-?\d+)', line)
+            if m:
+                return int(m.group(5)), int(m.group(6)), int(m.group(1)), int(m.group(2))
+    return None
+
+
+def led_screen_position(geo=None):
+    """Screen coords of the LED, matching where clockwidget.lua draws it."""
+    if geo is None:
+        geo = conky_window_geometry()
+    if geo:
+        x, y, w, h = geo
+        return (x + LED_X * w / WINDOW_W,
+                y + LED_Y * h / WINDOW_H)
+    # fallback: assume conky is top_right aligned per the config
+    screen = Gdk.Screen.get_default()
+    sw = screen.get_width()
+    return (sw - GAP_X - WINDOW_W * SCALE + LED_X * SCALE,
+            GAP_Y + LED_Y * SCALE)
+
+
+def do_toggle():
+    try:
+        with open(SWITCH_FILE, 'w') as f:
+            f.write('1\n%d\n' % int(time.time()))
+    except OSError as err:
+        print('could not write %s: %s' % (SWITCH_FILE, err), file=sys.stderr)
+
+
+class UI:
+    def __init__(self, x, y, cmd, width, height):
+        self.cmd = cmd
+        self.clicked = False
+        self.toggle = False
+
+        self.win = Gtk.Window()
+        self.win.set_title('conky-clockwidget-led')
+        self.win.set_type_hint(Gdk.WindowTypeHint.DOCK)
+        # must hover above the dock-type conky window to receive clicks
+        self.win.set_keep_above(True)
+        self.win.set_decorated(False)
+        self.win.set_skip_taskbar_hint(True)
+        self.win.set_skip_pager_hint(True)
+        self.win.stick()
+        self.win.set_app_paintable(True)
+
+        screen = self.win.get_screen()
+        if screen.get_rgba_visual() is not None:
+            self.win.set_visual(screen.get_rgba_visual())
+
+        self.win.connect('destroy', Gtk.main_quit)
+        self.win.connect('draw', self.expose)
+
+        self.eventbox = Gtk.EventBox()
+        self.eventbox.set_visible_window(False)
+        self.eventbox.set_size_request(width, height)
+        self.eventbox.connect('button_press_event', self.press)
+        self.eventbox.connect('button_release_event', self.release)
+
+        self.win.add(self.eventbox)
+        self.win.resize(width, height)
+        # center the button on the LED
+        self.win.move(int(x - width / 2), int(y - height / 2))
+        self.win.show_all()
+        # re-align each second so start-up races with conky mapping the
+        # window (or monitor changes / WM re-placement) never break the hotspot
+        GLib.timeout_add_seconds(1, self.reposition)
+
+    def reposition(self):
+        if self.cmd:
+            return True
+        # conky may re-map above us (only_override / restart races);
+        # re-assert stacking so the LED always stays clickable
+        self.win.set_keep_above(True)
+        geo = conky_window_geometry()
+        if geo is None:
+            # conky went away (e.g. stopped via conky-manager) - self-exit once
+            # it stays gone; conky's Lua startup hook respawns us next time
+            self.missing = getattr(self, 'missing', 0) + 1
+            if self.missing > 15:
+                Gtk.main_quit()
+                return False
+            return True
+        self.missing = 0
+        tx, ty = led_screen_position(geo)
+        cx, cy = self.win.get_position()
+        dx = int(tx - self.win.get_allocated_width() / 2)
+        dy = int(ty - self.win.get_allocated_height() / 2)
+        if abs(cx - dx) > 2 or abs(cy - dy) > 2:
+            self.win.move(dx, dy)
+        return True
+
+    def press(self, widget, event):
+        if event.button == 2:      # middle click quits the button
+            Gtk.main_quit()
+            return True
+        self.toggle = True
+        self.clicked = True
+        self.win.queue_draw()
+        return True
+
+    def release(self, widget, event):
+        self.clicked = False
+        self.toggle = True
+        self.win.queue_draw()
+        if self.cmd:
+            os.system('%s &' % self.cmd)
+        else:
+            do_toggle()
+        return True
+
+    def expose(self, widget, cr):
+        # paint the entire window fully transparent
+        cr.set_source_rgba(0, 0, 0, 0)
+        cr.set_operator(0)          # cairo.Operator.SOURCE
+        cr.paint()
+        cr.set_operator(3)          # cairo.Operator.OVER
+        return False
+
+
+def usage():
+    print('Usage: %s [-x PIX] [-y PIX] [-s WxH] [-c CMD] [-t THEME]' % sys.argv[0])
+
+
+if __name__ == '__main__':
+    x, y, cmd, theme = None, None, None, 'clockwgt'
+    width, height = BUTTON_SIZE, BUTTON_SIZE
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'hs:x:y:c:t:', ['help'])
+    except getopt.GetoptError as err:
+        print(str(err))
+        usage()
+        sys.exit(2)
+    for o, a in opts:
+        if o in ('-h', '--help'):
+            usage()
+            sys.exit()
+        elif o == '-t':
+            theme = a
+        elif o == '-s':
+            w, h = a.split('x')
+            width, height = int(w), int(h)
+        elif o == '-x':
+            x = int(a)
+        elif o == '-y':
+            y = int(a)
+        elif o == '-c':
+            cmd = a
+
+    if x is None or y is None:
+        x, y = led_screen_position()
+
+    app = UI(x, y, cmd, width, height)
+    app.win.set_default_size(width, height)
+    Gtk.main()

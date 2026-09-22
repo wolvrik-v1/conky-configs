@@ -1,0 +1,32 @@
+#!/bin/bash
+# cyber-radar — start/stop/restart wrapper for the ADS-B radar companion
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+RC="$DIR/cyber-radarrc"
+PP="[c]onky .*cyber-radarrc"
+
+case "${1:-start}" in
+    start)
+        if pgrep -f "$PP" >/dev/null 2>&1; then
+            echo "Already running."
+        else
+            setsid conky -d -c "$RC" </dev/null >"$DIR/conky.log" 2>&1 &
+            sleep 1
+            echo "Started."
+        fi
+        ;;
+    stop)
+        pkill -f "$PP" 2>/dev/null
+        echo "Stopped."
+        ;;
+    restart)
+        pkill -f "$PP" 2>/dev/null
+        sleep 0.5
+        setsid conky -d -c "$RC" </dev/null >"$DIR/conky.log" 2>&1 &
+        sleep 1
+        echo "Restarted."
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        ;;
+esac
