@@ -1,0 +1,81 @@
+-- ## Conky Clock Widget - ORIGINAL jpope face (long hash marks)  ##
+-- ## original by jpope (v1.1, 2010)                               ##
+-- ## modernized for Conky 1.12.x (Lua/Cairo)                      ##
+-- ##                                                              ##
+-- ## Separate version replicating the original screenshot look:   ##
+-- ## 12 long major hash ticks (hours) + 48 shorter minor ticks,   ##
+-- ## dark center hub, red second hand, month-above/day-below.     ##
+-- ## Click the LED to flip clock-mode <-> calendar-mode.          ##
+-- #################################################################
+
+conky.config = {
+    -- -- Conky settings -- --
+    update_interval = 1,
+    cpu_avg_samples = 2,
+    net_avg_samples = 2,
+    override_utf8_locale = true,
+    double_buffer = true,
+    no_buffers = true,
+    text_buffer_size = 2048,
+    imlib_cache_size = 0,
+
+    -- -- Window specifications -- --
+    own_window = true,
+    -- 'desktop' keeps the widget behind normal windows (never always-on-top)
+    -- while the LED button overlay still floats above it to catch clicks
+    own_window_type = 'desktop',
+    own_window_transparent = true,
+    -- ARGB gives real per-window transparency (needs a compositor)
+    own_window_argb_visual = true,
+    own_window_argb_value = 128,
+    own_window_colour = '000000',
+    own_window_hints = 'undecorated,sticky,skip_taskbar,skip_pager',
+    -- recognizable class/title: this is the user's FAVORITE face (the
+    -- original jpope look with the digital date/time/day inner circle)
+    own_window_class = 'conky-clockwidget-fav',
+    own_window_title = 'Favorite Clock',
+    border_inner_margin = 0,
+    border_outer_margin = 0,
+
+    -- the Lua design grid stays 175x175; the window is scaled up from
+    -- that so the widget reads larger on screen
+    minimum_width = 260,
+    minimum_height = 260,
+    maximum_width = 260,
+    maximum_height = 260,
+
+    -- -- Position -- --
+    -- top_right + gaps must stay in sync with btnclockwdgt (LED hotspot)
+    -- SAME position as the main clockwidget (gap_y=50): this widget is
+    -- meant to REPLACE it, not sit alongside it
+    alignment = 'top_right',
+    gap_x = 20,
+    gap_y = 30,
+
+    -- -- Graphics settings -- --
+    draw_shades = false,
+    draw_outline = false,
+    draw_borders = false,
+    draw_graph_borders = false,
+
+    -- -- Text settings -- --
+    -- (all visible text is drawn by Lua/Cairo; this just keeps Conky quiet)
+    use_xft = true,
+    font = 'DejaVu Sans:size=10',
+    xftalpha = 0.8,
+    use_spacer = 'left',
+    uppercase = false,
+
+    -- -- Color settings (legacy TEXT vars, unused here) -- --
+    default_color = 'ffffff',
+    color1 = 'bbbbbb',
+    color2 = '999999',
+    color3 = 'eeeeee',
+
+    -- -- Lua -- --
+    lua_load = '~/.conky/clockwidget-orig/conkyclock-orig.lua',
+    lua_draw_hook_pre = 'conky_main',
+};
+
+conky.text = [[
+]];

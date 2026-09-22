@@ -1,0 +1,51 @@
+local HOME_DIR = os.getenv('HOME')
+local WIDGET_DIR = HOME_DIR .. '/.config/pickle-weather-widget'
+local BLANK = WIDGET_DIR .. '/blank.png'
+
+conky.config = {
+    background = true,
+    update_interval = 5,
+
+    cpu_avg_samples = 2,
+    net_avg_samples = 2,
+
+    double_buffer = true,
+    no_buffers = true,
+    text_buffer_size = 4096,
+
+    alignment = 'top_left',
+    gap_x = 20,
+    gap_y = 50,
+
+    minimum_width = 540,
+    maximum_width = 540,
+    minimum_height = 280,
+
+    own_window = true,
+    own_window_type = 'dock',
+    own_window_class = 'Conky',
+    own_window_title = 'Pickle Weather',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_argb_value = 0,
+    own_window_colour = '000000',
+    own_window_hints = 'undecorated,sticky,skip_taskbar,skip_pager,below',
+
+    border_inner_margin = 0,
+    border_outer_margin = 0,
+
+    draw_shades = false,
+    draw_outline = false,
+    draw_borders = false,
+    draw_graph_borders = false,
+
+    override_utf8_locale = true,
+    use_xft = true,
+    font = 'Ubuntu:size=10',
+
+    lua_load = WIDGET_DIR .. '/pickle_weather.lua',
+    lua_draw_hook_pre = 'conky_render_panel',
+}
+
+-- This transparent image keeps the dock window at the intended size.
+conky.text = '${image ' .. BLANK .. ' -p 0,0 -s 540x280}'

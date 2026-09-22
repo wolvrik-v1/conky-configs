@@ -1,0 +1,33 @@
+# Backups / editor droppings
+*~
+*.swp
+*.swo
+*.bak
+*.bak.*
+*.old
+*.orig
+*.tmp
+*.rej
+
+# Runtime logs
+*.log
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Secrets — never commit
+openweather.key
+*.key
+
+# Runtime session state
+clockswitch
+zentimer
+fav_check.png
+
+# Package artifacts
+*.zip
+*.tar.gz
+
+# Third-party design references (kept locally, not redistributed)
+preview.jpg
