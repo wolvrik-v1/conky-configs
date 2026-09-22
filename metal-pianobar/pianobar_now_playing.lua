@@ -35,7 +35,9 @@ local HDR_Y, HDR_H = 14, 60
 local DIAL_X, DIAL_Y, DIAL_W, DIAL_H = 20, 84, 300, 240
 local DIAL_CX, DIAL_CY = 168, 204           -- dial centre (seated in module)
 local DIAL_R          = 104                 -- dial outer radius (expanded ring)
-local ART_R           = 70                  -- cover art radius
+local ART_R           = DIAL_R * 0.55          -- cover art sits just below the 0.60 grey ring, so the
+                                               -- family ring sequence (grey->black->grey->grey->dark->rim)
+                                               -- stays visible around it in a slim but clear band
 -- Major ticks reach from the album-art edge (the gauge's "inner circle",
 -- mirroring the family's 0.46->1.00) out to the rim.
 local TICK_MI_FR, TICK_MO_FR = ART_R/DIAL_R, 0.990
@@ -378,9 +380,10 @@ local function draw_cover_image(cr, cx, cy, img_r)
         if marker_h then marker_h:close() end
         if marker_v ~= tostring(jpg_mtime) or not file_exists(COVER_PNG) then
             os.remove(COVER_PNG)
+            local sz = math.floor(img_r * 2 + 0.5)   -- %d needs an integer (ART_R is fractional)
             local cmd = string.format(
                 'convert %s -resize %dx%d^ -gravity center -extent %dx%d %s 2>/dev/null',
-                shell_quote(COVER_JPG), img_r*2, img_r*2, img_r*2, img_r*2, shell_quote(COVER_PNG)
+                shell_quote(COVER_JPG), sz, sz, sz, sz, shell_quote(COVER_PNG)
             )
             os.execute(cmd)
             if file_exists(COVER_PNG) then
