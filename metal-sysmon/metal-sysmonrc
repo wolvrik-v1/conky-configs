@@ -1,0 +1,61 @@
+-- ############################################################
+--  metal-sysmon -- a system-monitor panel in the style of
+--  the jpope clockwidget (metal plate, contoured corners, blue
+--  LED accent). Layout follows the user's mockup: title /
+--  STORAGE arc / ROOT+HOME / UPTIME / 4x CPU ring gauges /
+--  NETWORK. All drawing happens in metal-sysmon.lua
+--  (TEXT is intentionally empty).
+-- ############################################################
+
+conky.config = {
+    update_interval = 1,
+    cpu_avg_samples = 2,
+    net_avg_samples = 2,
+    override_utf8_locale = true,
+    double_buffer = true,
+    no_buffers = true,
+    text_buffer_size = 1024,
+    imlib_cache_size = 0,
+    temperature_unit = 'celsius',
+
+    own_window = true,
+    own_window_type = 'desktop',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_argb_value = 128,
+    own_window_colour = '000000',
+    own_window_hints = 'undecorated,sticky,skip_taskbar,skip_pager',
+    own_window_class = 'conky-metal-sysmon',
+    border_inner_margin = 0,
+    border_outer_margin = 0,
+
+    minimum_width = 230,
+    minimum_height = 1115,
+    maximum_width = 230,
+
+    alignment = 'top_left',
+    gap_x = 12,
+    gap_y = 30,
+
+    draw_shades = false,
+    draw_outline = false,
+    draw_borders = false,
+    draw_graph_borders = false,
+
+    use_xft = true,
+    font = 'DejaVu Sans:size=9',
+    xftalpha = 0.8,
+    use_spacer = 'left',
+    uppercase = false,
+
+    default_color = 'E8ECEF',
+    color1 = 'F2F5F7',
+    color2 = '9AA4AC',
+    color3 = '3A8FD6',
+
+    lua_load = '~/.conky/metal-sysmon/metal-sysmon.lua',
+    lua_draw_hook_pre = 'draw_bg',
+};
+
+conky.text = [[
+]];

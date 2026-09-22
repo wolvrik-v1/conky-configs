@@ -1,0 +1,51 @@
+conky.config = {
+	background = false,
+	update_interval = 0.1,
+
+	cpu_avg_samples = 2,
+	net_avg_samples = 2,
+
+	override_utf8_locale = true,
+
+	double_buffer = true,
+	no_buffers = true,
+
+	text_buffer_size = 4096,
+
+	use_xft = true,
+	font = 'Noto Sans Mono CJK JP:size=10',
+	xftalpha = 0.9,
+
+	own_window = true,
+	own_window_transparent = true,
+	own_window_argb_visual = true,
+	own_window_type = 'dock',
+	own_window_argb_value = 255,
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	own_window_class = 'conky-cyber-deck',
+	own_window_colour = '000000',
+
+	default_color = '#00ff41',
+	color0 = '#00ff41',
+	color1 = '#00f0ff',
+	color2 = '#0a3a18',
+	border_inner_margin = 0,
+	border_outer_margin = 0,
+
+	minimum_width = 340, maximum_width = 340,
+	minimum_height = 920,
+	alignment = 'top_left',
+	xinerama_head = 1,
+	gap_x = -360,
+	gap_y = 50,
+
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+
+	lua_load = '~/.conky/cyber-deck/cyber-deck.lua',
+	lua_draw_hook_pre = 'conky_main',
+};
+
+conky.text = [[ ]];

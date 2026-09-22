@@ -1,0 +1,33 @@
+#!/bin/bash
+# Pianobar Now Playing start/stop/restart wrapper
+
+DIR="${XDG_CONFIG_HOME:-$HOME/.config}/metal-pianobar"
+RC="$DIR/metal-pianobarrc"
+LOG="${XDG_CACHE_HOME:-$HOME/.cache}/metal-pianobar/metal-pianobar.log"
+
+mkdir -p "$(dirname "$LOG")"
+
+case "$1" in
+    start)
+        if pgrep -f "metal-pianobarrc" >/dev/null 2>&1; then
+            echo "metal-pianobar already running"
+        else
+            setsid conky -d -c "$RC" </dev/null >>"$LOG" 2>&1 &
+            disown
+            sleep 1
+            echo "metal-pianobar started"
+        fi
+        ;;
+    stop)
+        pkill -f "metal-pianobarrc" 2>/dev/null
+        echo "metal-pianobar stopped"
+        ;;
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    *)
+        echo "usage: $0 {start|stop|restart}"
+        ;;
+esac

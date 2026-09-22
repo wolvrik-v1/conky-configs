@@ -1,0 +1,30 @@
+#!/bin/bash
+# metal-sysmon start/stop/restart wrapper (conky-only)
+
+DIR="$HOME/.conky/metal-sysmon"
+RC="$DIR/metal-sysmonrc"
+
+case "$1" in
+    start)
+        if pgrep -f "[m]etal-sysmonrc" >/dev/null 2>&1; then
+            echo "metal-sysmon already running"
+        else
+            setsid conky -d -c "$RC" </dev/null >>"$DIR/metal-sysmon.log" 2>&1 &
+            disown
+            sleep 1
+            echo "metal-sysmon started"
+        fi
+        ;;
+    stop)
+        pkill -f "[m]etal-sysmonrc" 2>/dev/null
+        echo "metal-sysmon stopped"
+        ;;
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    *)
+        echo "usage: $0 {start|stop|restart}"
+        ;;
+esac

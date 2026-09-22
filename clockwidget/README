@@ -23,14 +23,14 @@ What changed in the modern version
 * The widget is larger on screen: the conky window is 260x260 while the
   Lua design grid stays 175x175 and everything is scaled by
   G.s = min(window/175, window/175). Keep the conky min/max sizes and
-  the btnclockwdgt SCALE constant in sync if you change this.
+  the clockwidget-btn SCALE constant in sync if you change this.
 * The LED is drawn where the socket dot in the artwork sits (grid 154,155);
-  btnclockwdgt pins its own button to the same spot via the real window
+  clockwidget-btn pins its own button to the same spot via the real window
   geometry, re-asserting keep-above every second.
 * The 10-second calendar timeout is handled inside Lua (uses the
   'clockswitch' state file timestamp), so the fragile `sleep 10s` shell
   command is gone.
-* The LED/button no longer depends on theme images. btnclockwdgt is now
+* The LED/button no longer depends on theme images. clockwidget-btn is now
   a small fully-transparent GTK3 window that only catches the click. It
   pinpoints the LED by reading the conky window's real X geometry each
   second, so it stays aligned across start-up races and monitor changes.
@@ -39,31 +39,31 @@ What changed in the modern version
 
 Files
 -----
-conkyclockwdgtrc     conky config (modern syntax; window 260x260)
-conkyclock.lua       Cairo renderer: analog clock + calendar + LED
-btnclockwdgt         GTK3 click overlay that flips the clock/calendar
-conkyclock           start/stop/restart wrapper
+clockwidgetrc     conky config (modern syntax; window 260x260)
+clockwidget.lua       Cairo renderer: analog clock + calendar + LED
+clockwidget-btn         GTK3 click overlay that flips the clock/calendar
+clockwidget           start/stop/restart wrapper
 clockswitch          state file ("0" = clock, "1" = calendar) - do not edit
 images/bckgnd.png        square clock face (brushed metal + round well)
 images/bckgnd_plain.png  square calendar plate
 
 Setup
 -----
-1. Run `./conkyclock start` (or `~/.conky/clockwidget/conkyclock start`)
+1. Run `./clockwidget start` (or `~/.conky/clockwidget/clockwidget start`)
    to launch the widget together with its click button.
-2. Use `./conkyclock stop` / `./conkyclock restart` as needed.
+2. Use `./clockwidget stop` / `./clockwidget restart` as needed.
    Moksha autostart already calls this from ~/.conky/conky-startup.sh.
 
 Positioning
 -----------
-* The widget sits top-right (gap_x 16, gap_y 50) - edit conkyclockwdgtrc.
+* The widget sits top-right (gap_x 16, gap_y 50) - edit clockwidgetrc.
 * To move it, change alignment/gap_x/gap_y in the conky config, and the
-  matching GAP_* constants in btnclockwdgt (the button auto-aligns to the
+  matching GAP_* constants in clockwidget-btn (the button auto-aligns to the
   drawn LED, but keep the fallback sane).
 * The Lua design grid is 175x175; positions are scaled to the real window
   size automatically, so different DPI/monitors are fine.
 
-Optional tuning in conkyclock.lua (USER OPTIONS block):
+Optional tuning in clockwidget.lua (USER OPTIONS block):
 * CAL_TIMEOUT          seconds the calendar stays visible (default 10)
 * colors (LEDON..LEDRING), clock face radius, LED position, fonts.
 
@@ -71,4 +71,4 @@ References (as in the original)
 ----------
 LONDONALI1010   - http://mylittledesktop.blogspot.com/
 mrpeachy        - http://thepeachyblog.blogspot.com
-ADcomp          - http://ad-comp.be/ (ADesk, the basis of btnclockwdgt)
+ADcomp          - http://ad-comp.be/ (ADesk, the basis of clockwidget-btn)
