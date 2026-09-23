@@ -68,10 +68,14 @@ local TICKMAJOR = { 0x9e, 0xa6, 0xb0 }
 local TICKMINOR = { 0x6e, 0x77, 0x81 }
 
 -- The family gauge face: 7 concentric ring sections (largest -> smallest).
+-- Same silver-grey as metal-sysmon/metal-clock, but the two mid rings
+-- (0x2e, 0x52) are nudged ~6 luma brighter here because the album art
+-- covers the bright 0x6c centre ring, so the dial would otherwise read
+-- darker than the family's exposed-silver faces.
 local GSECTIONS = {
     { 1.00, { 0x14, 0x14, 0x16 } },
-    { 0.91, { 0x2e, 0x2e, 0x2e } },
-    { 0.76, { 0x52, 0x52, 0x52 } },
+    { 0.91, { 0x35, 0x35, 0x35 } },
+    { 0.76, { 0x58, 0x58, 0x58 } },
     { 0.69, { 0x56, 0x56, 0x55 } },
     { 0.64, { 0x14, 0x14, 0x16 } },
     { 0.60, { 0x6c, 0x6b, 0x6a } },
@@ -266,10 +270,6 @@ local function dial_well(cr, cx, cy, r)
         cairo_arc(cr, cx*S, cy*S, r*S*sec[1], 0, 2*math.pi)
         cairo_fill(cr)
     end
-    set_c(cr, { 0xd8, 0xd5, 0xcf }, 0.10)
-    cairo_set_line_width(cr, 2.0 * S)
-    cairo_arc(cr, cx*S, cy*S, r*0.92*S, math.pi + 0.15, 3*math.pi/2)
-    cairo_stroke(cr)
 end
 
 local function dial_ticks(cr, cx, cy, r)
@@ -287,8 +287,10 @@ local function dial_ticks(cr, cx, cy, r)
     end
 end
 
--- The metal-sysmon gauge needle: a rectangular HANDCOL bar sweeping
--- 270 degrees from 12 o'clock as track progress rises. Base sits just
+-- The metal-sysmon gauge needle: a rectangular HANDCOL bar making a
+-- FULL 360-degree revolution from 12 o'clock as track progress rises.
+-- A complete song = one complete revolution, so the hand lands back at
+-- 12 o'clock (the top) exactly as the song ends. Base sits just
 -- outside the album art disc; tip reaches the inner edge of the black
 -- rim (the outer edge of the grey tick zone).
 local function gauge_needle(cr, cx, cy, r, frac, color, paused)
@@ -296,7 +298,7 @@ local function gauge_needle(cr, cx, cy, r, frac, color, paused)
     local base  = ART_R * 1.02
     local tip   = r * 0.96
     local halfw = 2.0 * S
-    local ang   = -math.pi/2 + frac * 3*math.pi/2   -- 12 o'clock -> 9 o'clock
+    local ang   = -math.pi/2 + frac * 2*math.pi   -- 12 o'clock -> full turn -> 12 o'clock
     cairo_save(cr)
     cairo_translate(cr, cx*S, cy*S)
     cairo_rotate(cr, ang)
