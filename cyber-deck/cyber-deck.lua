@@ -39,6 +39,16 @@ local F_KANA  = 'Noto Sans Mono CJK JP'
 local F_UI    = 'Noto Sans Mono CJK JP'
 
 -- ------------------------------------------------------------
+--  SHARED TEXT-EXTENTS OBJECT
+--  lua-cario does NOT tie a cairo_text_extents_t to the Lua garbage
+--  collector, so allocating one per call leaks every measurement of
+--  every frame. That was measured here at ~18 KB/s (1.1 GB/day).
+--  One object for the whole file: cairo_text_extents() simply refills
+--  it on each call. Do not create another one.
+-- ------------------------------------------------------------
+local TEXT_EXT = cairo_text_extents_t:create()
+
+-- ------------------------------------------------------------
 --  DATA / ANIMATION STATE
 -- ------------------------------------------------------------
 local st = {
@@ -110,7 +120,7 @@ local function text(cr, s, x, y, fam, size, weight, c, a, align, shadow)
     cairo_select_font_face(cr, fam, CAIRO_FONT_SLANT_NORMAL,
         weight or CAIRO_FONT_WEIGHT_NORMAL)
     cairo_set_font_size(cr, size)
-    local ext = cairo_text_extents_t:create()
+    local ext = TEXT_EXT
     cairo_text_extents(cr, s, ext)
     local tx = x
     if align == 'center' then
@@ -136,7 +146,7 @@ local function glow_text(cr, s, x, y, fam, size, c, align, weight)
     cairo_select_font_face(cr, fam, CAIRO_FONT_SLANT_NORMAL,
         weight or CAIRO_FONT_WEIGHT_NORMAL)
     cairo_set_font_size(cr, size)
-    local ext = cairo_text_extents_t:create()
+    local ext = TEXT_EXT
     cairo_text_extents(cr, s, ext)
     local tx = x
     if align == 'center' then
@@ -341,7 +351,7 @@ local function draw_clock(cr, s, cx, cy, size, up)
     local fam, weight = F_MONO, CAIRO_FONT_WEIGHT_BOLD
     cairo_select_font_face(cr, fam, CAIRO_FONT_SLANT_NORMAL, weight)
     cairo_set_font_size(cr, size)
-    local ext = cairo_text_extents_t:create()
+    local ext = TEXT_EXT
     cairo_text_extents(cr, s, ext)
     local tx = cx - (ext.width / 2 + ext.x_bearing)
     local ty = cy
@@ -940,7 +950,7 @@ function conky_main()
         cairo_select_font_face(cr, F_UI, CAIRO_FONT_SLANT_NORMAL,
             CAIRO_FONT_WEIGHT_BOLD)
         cairo_set_font_size(cr, 11 * S)
-        local ext = cairo_text_extents_t:create()
+        local ext = TEXT_EXT
         cairo_text_extents(cr, str, ext)
         local tw = ext.width
         st.scroll = st.scroll + 0.9 * S

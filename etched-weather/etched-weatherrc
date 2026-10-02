@@ -48,4 +48,7 @@ conky.config = {
 }
 
 -- This transparent image keeps the dock window at the intended size.
-conky.text = '${image ' .. BLANK .. ' -p 0,0 -s 540x280}'
+-- ${execi 300} refreshes the OpenWeather cache every 5 minutes. Output is
+-- discarded (>) so the updater's status line never appears in the widget; the
+-- Lua renderer draws its own brief "UPDATED" flash beside the title instead.
+conky.text = '${image ' .. BLANK .. ' -p 0,0 -s 540x280} ${execi 300 python3 ' .. WIDGET_DIR .. '/updater.py > /dev/null 2>&1}'

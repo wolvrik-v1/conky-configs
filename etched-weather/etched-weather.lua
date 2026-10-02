@@ -100,6 +100,7 @@ local function read_cache()
         return {
             location = 'WEST VIEW',
             updated_text = '--:--',
+            updated = 0,
             current = {},
             daily = {}
         }
@@ -162,6 +163,7 @@ local function read_cache()
     return {
         location = location,
         updated_text = string_field(source, 'updated_text'),
+        updated = number_field(source, 'updated') or 0,
         current = current,
         daily = daily
     }
@@ -619,15 +621,32 @@ function conky_render_panel()
         updated = '--:--'
     end
 
-    put(
-        'UPDATED ' .. updated,
-        right,
-        46,
-        9,
-        false,
-        COLORS.text_gray,
-        'right'
+    -- Cyan "UPDATED" label, then the timestamp in grey. Drawn as two runs
+    -- so the label can carry the accent colour while the time stays
+    -- subdued, with the pair right-aligned to the panel edge.
+    set_font(9, false)
+
+    local label_text = 'UPDATED'
+    local label_extents = text_extents(label_text)
+    local time_extents = text_extents(updated)
+
+    local gap = 5
+    local pair_width = label_extents.width + gap + time_extents.width
+    local pair_x = right - pair_width - label_extents.x_bearing
+
+    set_color(COLORS.dot_cyan)
+
+    cairo_move_to(cr, pair_x, 46)
+    cairo_show_text(cr, label_text)
+
+    set_color(COLORS.text_gray)
+
+    cairo_move_to(
+        cr,
+        pair_x + label_extents.width + gap - label_extents.x_bearing,
+        46
     )
+    cairo_show_text(cr, updated)
 
     draw_line(
         X,
@@ -651,12 +670,19 @@ function conky_render_panel()
         78,
         10,
         true,
-        COLORS.text_gray
+        COLORS.dot_cyan
     )
+
+    -- Centre the current icon under the 'NOW' label. draw_icon() anchors on
+    -- the glyph centre, so pass the label's own centre rather than the left
+    -- margin; this matches how the forecast row centres icons on cell_x.
+    set_font(10, true)
+
+    local now_extents = text_extents('NOW')
 
     draw_icon(
         current.icon_id,
-        X,
+        X + now_extents.width / 2 + now_extents.x_bearing,
         92,
         26,
         accent
@@ -806,12 +832,15 @@ function conky_render_panel()
         )
 
         if item then
+            -- The NOW column means now, not today's daily summary: OpenWeather
+            -- can give the two different codes (observed 501 vs daily 500).
+            -- Temps still come from the daily entry -- today's hi/lo are right.
             draw_icon(
-                item.icon_id,
+                day == 'NOW' and current.icon_id or item.icon_id,
                 cell_x,
                 206,
                 15,
-                COLORS.text_gray
+                COLORS.dot_cyan
             )
 
             put(

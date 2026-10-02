@@ -467,7 +467,7 @@ def aggregate_forecast(items, timezone_name, timezone_offset):
 
         icon_id = finite_number(first_weather.get("id"))
 
-        if icon_id is not None:
+        if icon_id is not None and not group["icon_id"]:
             group["icon_id"] = int(icon_id)
 
     daily = []

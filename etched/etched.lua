@@ -26,6 +26,19 @@ function conky_render_panel()
     local line_gray    = {0.3, 0.3, 0.3, 0.4}
     local text_gray    = {0.47, 0.47, 0.47, 1.0}
 
+    -- Numeric readout font. 'Ubuntu' is the default look; set this to
+    -- 'DS-Digital' for the original seven-segment face (the fonts/DS-DIGI*.TTF
+    -- in the package). DS-Digital is a narrow face, so it carries its own
+    -- larger point sizes -- hence the table rather than one shared size.
+    -- Labels (Cpu, Ram, Temp, Net, ...) always stay on Ubuntu.
+    local NUM_FONT = 'Ubuntu'
+
+    local NUM_SIZE = {
+        ['Ubuntu']     = { clock = 42, pct = 24, pct_sm = 22, net = 20, count = 24 },
+        ['DS-Digital'] = { clock = 42, pct = 28, pct_sm = 28, net = 21, count = 28 },
+    }
+    local NF = NUM_SIZE[NUM_FONT] or NUM_SIZE['Ubuntu']
+
     -- Metric Fetching
     local time_str    = conky_parse("${time %I:%M}")
     local cpu         = tonumber(conky_parse("${cpu cpu0}")) or 0
@@ -72,14 +85,14 @@ function conky_render_panel()
 
     -- 0. Clock & AM/PM (True Center Alignment)
     -- Calculate centered X position for dynamic clock digits
-    cairo_select_font_face(cr, "Ubuntu", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
-    cairo_set_font_size(cr, 42)
+    cairo_select_font_face(cr, NUM_FONT, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
+    cairo_set_font_size(cr, NF.clock)
     local extents = cairo_text_extents_t:create()
     cairo_text_extents(cr, time_str, extents)
     local clock_x = (conky_window.width - extents.width) / 2 - extents.x_bearing
 
     -- Draw Centered Clock
-    draw_text(time_str, clock_x, 43, "Ubuntu", 42, true, {1.0, 1.0, 1.0, 1.0})
+    draw_text(time_str, clock_x, 43, NUM_FONT, NF.clock, true, {1.0, 1.0, 1.0, 1.0})
 
     -- Draw Centered AM / PM Labels
     draw_text("AM", 38, 66, "Ubuntu", 11, false, text_gray)
@@ -94,7 +107,7 @@ function conky_render_panel()
 
     -- 1. CPU Usage
     draw_text("Cpu", 14, 116, "Ubuntu", 12, false, text_gray)
-    draw_text(cpu .. "%", 46, 142, "Ubuntu", 24, true, text_gray)
+    draw_text(cpu .. "%", 46, 142, NUM_FONT, NF.pct, true, text_gray)
     draw_line(28, 156, 118, 156, line_gray)
     local cpu_x = 28 + ((cpu / 100) * 90)
     local cpu_color = cpu > 80 and alert_red or (cpu > 50 and alert_yellow or track_cyan)
@@ -103,7 +116,7 @@ function conky_render_panel()
 
     -- 2. RAM Usage
     draw_text("Ram", 14, 200, "Ubuntu", 12, false, text_gray)
-    draw_text(ram .. "%", 46, 226, "Ubuntu", 24, true, text_gray)
+    draw_text(ram .. "%", 46, 226, NUM_FONT, NF.pct, true, text_gray)
     draw_line(28, 240, 118, 240, line_gray)
     local ram_x = 28 + ((ram / 100) * 90)
     local ram_color = ram > 80 and alert_red or (ram > 50 and alert_yellow or track_cyan)
@@ -112,7 +125,7 @@ function conky_render_panel()
 
     -- 3. CPU Temp
     draw_text("Cpu", 14, 284, "Ubuntu", 12, false, text_gray)
-    draw_text(temp .. " C", 32, 312, "Ubuntu", 22, true, text_gray)
+    draw_text(temp .. " C", 32, 312, NUM_FONT, NF.pct_sm, true, text_gray)
     draw_text("Temp", 96, 308, "Ubuntu", 11, false, text_gray)
     local temp_color = temp > 55 and alert_red or (temp > 45 and alert_yellow or track_cyan)
     draw_dot(114, 324, 3.5, temp_color)
@@ -120,7 +133,7 @@ function conky_render_panel()
 
     -- 4. System Free
     draw_text("System", 14, 362, "Ubuntu", 12, false, text_gray)
-    draw_text(system .. "%", 32, 390, "Ubuntu", 22, true, text_gray)
+    draw_text(system .. "%", 32, 390, NUM_FONT, NF.pct_sm, true, text_gray)
     draw_text("Free", 98, 386, "Ubuntu", 11, false, text_gray)
     local sys_color = system < 15 and alert_red or (system < 35 and alert_yellow or track_cyan)
     draw_dot(114, 402, 3.5, sys_color)
@@ -128,7 +141,7 @@ function conky_render_panel()
 
     -- 5. Home Free
     draw_text("Home", 14, 440, "Ubuntu", 12, false, text_gray)
-    draw_text(home .. "%", 32, 468, "Ubuntu", 22, true, text_gray)
+    draw_text(home .. "%", 32, 468, NUM_FONT, NF.pct_sm, true, text_gray)
     draw_text("Free", 98, 464, "Ubuntu", 11, false, text_gray)
     local home_color = home < 15 and alert_red or (home < 35 and alert_yellow or track_cyan)
     draw_dot(114, 480, 3.5, home_color)
@@ -136,18 +149,18 @@ function conky_render_panel()
 
     -- 6. Net (Up & Down)
     draw_text("Net", 14, 518, "Ubuntu", 12, false, text_gray)
-    draw_text(up_speed, 30, 544, "Ubuntu", 20, true, text_gray)
+    draw_text(up_speed, 30, 544, NUM_FONT, NF.net, true, text_gray)
     draw_text("Up", 106, 532, "Ubuntu", 11, false, text_gray)
     draw_dot(114, 548, 3.5, track_cyan)
 
-    draw_text(down_speed, 30, 580, "Ubuntu", 20, true, text_gray)
+    draw_text(down_speed, 30, 580, NUM_FONT, NF.net, true, text_gray)
     draw_text("Down", 92, 568, "Ubuntu", 11, false, text_gray)
     draw_dot(114, 584, 3.5, track_cyan)
     draw_line(56, 602, 128, 602, line_gray)
 
     -- 7. Packages / Update
     draw_text("Update", 14, 624, "Ubuntu", 12, false, text_gray)
-    draw_text(tostring(updates), 36, 652, "Ubuntu", 24, true, text_gray)
+    draw_text(tostring(updates), 36, 652, NUM_FONT, NF.count, true, text_gray)
     draw_text("PACKAGES", 68, 650, "Ubuntu", 10, true, text_gray)
     draw_text("New", 98, 672, "Ubuntu", 11, false, text_gray)
     local update_color = updates > 0 and alert_red or track_cyan

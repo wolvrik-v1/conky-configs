@@ -24,6 +24,7 @@ etched-pianobar		$HOME/.config/etched-pianobar
 etched-weather		$HOME/.config/etched-weather
 cyber-deck		$HOME/.conky/cyber-deck
 cyber-radar		$HOME/.conky/cyber-radar
+cyber-atc		$HOME/.conky/cyber-atc
 clockwidget		$HOME/.conky/clockwidget
 clockwork-alchemist	$HOME/.conky/clockwork-alchemist
 bionic			$HOME/.conky/bionic
@@ -65,6 +66,6 @@ printf '%s\n' "$PAIRS" | while IFS=$'\t' read -r name src; do
     echo "synced: $name -> $dest/"
   else
     echo "--- dry-run: $name ---"
-    rsync -an --delete "${EXCL[@]}" "$src/" "$dest/"
+    rsync -ainv --delete "${EXCL[@]}" "$src/" "$dest/"
   fi
 done

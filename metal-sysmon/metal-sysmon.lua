@@ -232,6 +232,15 @@ end
 local FSANS = 'DejaVu Sans'
 local FMONO = 'DejaVu Sans Mono'
 
+-- ------------------------------------------------------------
+--  SHARED TEXT-EXTENTS OBJECT
+--  lua-cario does NOT tie a cairo_text_extents_t to the Lua garbage
+--  collector, so allocating one per call leaks every measurement of
+--  every frame. One object for the whole file: cairo_text_extents()
+--  simply refills it each call. Do not create another one.
+-- ------------------------------------------------------------
+local TEXT_EXT = cairo_text_extents_t:create()
+
 local function text_at(cr, x, y, str, col, size, mono, bold)
     if not str or str == '' then return end
     set_c(cr, col, 1)
@@ -250,7 +259,7 @@ local function text_cx(cr, cx, y, str, col, size, mono, bold)
                            CAIRO_FONT_SLANT_NORMAL,
                            bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
     cairo_set_font_size(cr, size * S)
-    local ext = cairo_text_extents_t:create()
+    local ext = TEXT_EXT
     cairo_text_extents(cr, str, ext)
     cairo_move_to(cr, cx - (ext.width/2 + ext.x_bearing), y)
     cairo_show_text(cr, str)
@@ -263,7 +272,7 @@ local function text_right(cr, right, y, str, col, size, mono, bold)
                            CAIRO_FONT_SLANT_NORMAL,
                            bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
     cairo_set_font_size(cr, size * S)
-    local ext = cairo_text_extents_t:create()
+    local ext = TEXT_EXT
     cairo_text_extents(cr, str, ext)
     cairo_move_to(cr, right - (ext.width + ext.x_bearing), y)
     cairo_show_text(cr, str)

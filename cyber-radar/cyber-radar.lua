@@ -35,6 +35,17 @@ local F_TITLE = 'SAIBA-45'
 local F_MONO  = 'DejaVu Sans Mono'
 
 -- ------------------------------------------------------------
+--  SHARED TEXT-EXTENTS OBJECT
+--  lua-cario does NOT tie a cairo_text_extents_t to the Lua garbage
+--  collector, so allocating one per call leaks every measurement of
+--  every frame. text() and glow_text() below are called many times
+--  per frame, so this measured as a real leak. One object for the
+--  whole file: cairo_text_extents() simply refills it each call.
+--  Do not create another one.
+-- ------------------------------------------------------------
+local TEXT_EXT = cairo_text_extents_t:create()
+
+-- ------------------------------------------------------------
 --  STATE
 -- ------------------------------------------------------------
 local st = {
@@ -79,7 +90,7 @@ local function text(cr, s, x, y, fam, size, weight, c, a, align)
     cairo_select_font_face(cr, fam, CAIRO_FONT_SLANT_NORMAL,
         weight or CAIRO_FONT_WEIGHT_NORMAL)
     cairo_set_font_size(cr, size)
-    local ext = cairo_text_extents_t:create()
+    local ext = TEXT_EXT
     cairo_text_extents(cr, s, ext)
     local tx = x
     if align == 'center' then
@@ -135,7 +146,7 @@ local function glow_text(cr, s, x, y, fam, size, c, align, weight)
     cairo_select_font_face(cr, fam, CAIRO_FONT_SLANT_NORMAL,
         weight or CAIRO_FONT_WEIGHT_NORMAL)
     cairo_set_font_size(cr, size)
-    local ext = cairo_text_extents_t:create()
+    local ext = TEXT_EXT
     cairo_text_extents(cr, s, ext)
     local tx = x
     if align == 'center' then
