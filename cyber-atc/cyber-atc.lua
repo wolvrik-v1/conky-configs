@@ -24,15 +24,32 @@ local function col(r, g, b) return { r / 255, g / 255, b / 255 } end
 local G_BRIGHT = col(0x6c, 0xff, 0x8a)   -- hot core of the neon
 local G_MAIN   = col(0x00, 0xff, 0x41)   -- primary phosphor green
 local G_MID    = col(0x00, 0xb3, 0x2e)
-local G_DIM    = col(0x0c, 0x7a, 0x2a)
-local G_FAINT  = col(0x0a, 0x3a, 0x18)
-local G_TRACE  = col(0x06, 0x2a, 0x12)
-local BG_PANEL = col(0x02, 0x08, 0x04)
-local BG_DEEP  = col(0x01, 0x03, 0x02)
-local CYAN     = col(0x30, 0xf0, 0xff)
-local AMBER    = col(0xff, 0xb0, 0x20)
-local RED      = col(0xff, 0x30, 0x28)
-local WHITE    = col(0xe8, 0xff, 0xee)
+--  STRUCTURE vs DATA.  Structure (labels, panel borders, graticules) is a pale
+--  phosphor green matched to the control room's own monitors; live values stay
+--  the saturated G_MAIN green.  The two separate by SATURATION rather than
+--  brightness, which is what buys structure the luminance it needs against a
+--  bright room.
+local G_DIM    = col(0x63, 0xb4, 0x89)
+local G_FAINT  = col(0x25, 0x5c, 0x40)
+local G_TRACE  = col(0x0e, 0x33, 0x20)
+local BG_PANEL = col(0x02, 0x08, 0x0b)
+local BG_DEEP  = col(0x01, 0x03, 0x05)
+--  CYAN carries the mid-altitude band, so it must stay clearly bluer than both
+--  G_MAIN (green data) and G_DIM (mint structure).  The wallpaper's own blue is
+--  hue 173 -- only 25 deg off G_DIM -- so this deliberately runs bluer than the
+--  scene to keep the band legible.  Softer and less electric than the old
+--  #30f0ff, so it sits in a bright room rather than fighting it.
+local CYAN     = col(0x5e, 0xcf, 0xe8)
+local AMBER    = col(0xff, 0xb0, 0x20)   -- high band: left alone on purpose.  The
+                                         -- wallpaper holds only 19 px of amber --
+                                         -- no real match to chase
+local RED      = col(0xff, 0x30, 0x28)   -- emergency: stays red, nothing else claims it
+local WHITE    = col(0xe9, 0xf7, 0xfb)   -- runway white, no longer green-tinted
+-- Corner-bracket mark.  Sampled from the nearest (lower-left) monitor in the
+-- wallpaper -- the one that shows the colour best: #c0fde4, luma 238, sat 94%.
+-- Deliberately NOT G_MAIN: at the neon green's 100% saturation these read as a
+-- signal; 51 luma lighter they read as the bright mint bezel highlight.
+local MARK     = col(0xc0, 0xfd, 0xe4)
 
 local F_TITLE = 'SAIBA-45'
 local F_MONO  = 'DejaVu Sans Mono'
@@ -243,9 +260,10 @@ local function chamfer_path(cr, x, y, w, h, cut)
 end
 
 -- multi-pass neon stroke of the CURRENT path (keeps path alive)
-local function neon_path(cr, c, width)
+-- `join` defaults to ROUND; pass CAIRO_LINE_JOIN_MITER to keep hard corners.
+local function neon_path(cr, c, width, join)
   cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
-  cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND)
+  cairo_set_line_join(cr, join or CAIRO_LINE_JOIN_ROUND)
   cairo_set_line_width(cr, width * 3.6)
   rgba(cr, c, 0.08)
   cairo_stroke_preserve(cr)
@@ -425,13 +443,15 @@ local function draw_manifest(cr, up)
     local mil = is_military(t.hex, t.fl)
     local em = SQUAWK_EMERG[t.sq] or (t.em ~= 'none') or false
     local rowcol = em and RED or (mil and AMBER or adscol(t.alt))
-    -- marker diamond
+    -- marker diamond.  Left vertex sits on the 24*S content margin so it clears
+    -- the inner frame at 12*S by a full 12*S -- it used to span 16..28, which was
+    -- only 4*S off the frame and read as touching it.
     cairo_set_line_width(cr, 1.0 * S)
     rgba(cr, rowcol, em and (0.6 + 0.4 * pulse) or 0.9)
-    cairo_move_to(cr, 22 * S, y - 4 * S)
-    cairo_line_to(cr, 28 * S, y)
-    cairo_line_to(cr, 22 * S, y + 4 * S)
-    cairo_line_to(cr, 16 * S, y)
+    cairo_move_to(cr, 30 * S, y - 4 * S)
+    cairo_line_to(cr, 36 * S, y)
+    cairo_line_to(cr, 30 * S, y + 4 * S)
+    cairo_line_to(cr, 24 * S, y)
     cairo_close_path(cr)
     if em then rgba(cr, rowcol, 0.5 + 0.5 * pulse); cairo_fill(cr)
     else cairo_stroke(cr) end
@@ -507,20 +527,46 @@ function conky_main()
   cairo_paint(cr)
   cairo_set_operator(cr, CAIRO_OPERATOR_OVER)
 
-  -- clip everything to the frame
-  chamfer_path(cr, 6 * S, 6 * S, (GRID_W - 12) * S, (GRID_H - 12) * S, 16 * S)
+  -- clip everything to the frame.  The cut MUST match the frame's own cut
+  -- below: at 16*S the clip shaved the square corners straight back off, which
+  -- is why ATC appeared to have no corners at all while deck and radar did.
+  chamfer_path(cr, 3 * S, 3 * S, (GRID_W - 6) * S, (GRID_H - 6) * S, 0)
   cairo_clip(cr)
 
   -- deep plate
-  chamfer_path(cr, 6 * S, 6 * S, (GRID_W - 12) * S, (GRID_H - 12) * S, 16 * S)
+  chamfer_path(cr, 3 * S, 3 * S, (GRID_W - 6) * S, (GRID_H - 6) * S, 0)
   rgba(cr, BG_PANEL, 0.55)
   cairo_fill(cr)
 
-  -- outer neon frame
-  chamfer_path(cr, 6 * S, 6 * S, (GRID_W - 12) * S, (GRID_H - 12) * S, 16 * S)
-  neon_path(cr, G_MAIN, 1.7 * S)
-  chamfer_path(cr, 10 * S, 10 * S, (GRID_W - 20) * S, (GRID_H - 20) * S, 13 * S)
+  -- outer neon frame.  cut 0 squares the corners; MITER stops the neon glow from
+  -- rounding them straight back off at the stroke join.
+  chamfer_path(cr, 3 * S, 3 * S, (GRID_W - 6) * S, (GRID_H - 6) * S, 0)
+  neon_path(cr, G_MAIN, 1.7 * S, CAIRO_LINE_JOIN_MITER)
+
+  -- corner brackets, ON the outer frame: same 6*S rect, arms running inward,
+  -- heavier than the frame with butt caps.  Exactly four per widget.
+  local fx, fy = 3 * S, 3 * S
+  local fw, fh = (GRID_W - 6) * S, (GRID_H - 6) * S
+  local arm = 12 * S
+  cairo_set_line_width(cr, 2.1 * S)
+  cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT)
+  cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER)
+  rgba(cr, MARK, 0.95)
+  local fcs = { { fx, fy, 1, 1 }, { fx + fw, fy, -1, 1 },
+                { fx, fy + fh, 1, -1 }, { fx + fw, fy + fh, -1, -1 } }
+  for _, c in ipairs(fcs) do
+    cairo_move_to(cr, c[1] + c[3] * arm, c[2])
+    cairo_line_to(cr, c[1], c[2])
+    cairo_line_to(cr, c[1], c[2] + c[4] * arm)
+    cairo_stroke(cr)
+  end
+
+  -- inner frame, pushed out from 15*S to 13*S.  It was the inner frame crowding
+  -- the content, not the panels being too wide -- so both frames move outward
+  -- together and the 9*S bezel gap between them survives intact.
+  chamfer_path(cr, 12 * S, 12 * S, (GRID_W - 24) * S, (GRID_H - 24) * S, 0)
   cairo_set_line_width(cr, 0.7 * S)
+  cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER)
   rgba(cr, G_DIM, 0.7)
   cairo_stroke(cr)
 

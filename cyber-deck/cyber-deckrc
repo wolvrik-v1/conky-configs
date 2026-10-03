@@ -37,7 +37,7 @@ conky.config = {
 	alignment = 'top_left',
 	xinerama_head = 1,
 	gap_x = -360,
-	gap_y = 50,
+	gap_y = 70,
 
 	draw_shades = false,
 	draw_outline = false,

@@ -19,15 +19,32 @@ local function col(r, g, b) return { r / 255, g / 255, b / 255 } end
 local G_BRIGHT = col(0x6c, 0xff, 0x8a)   -- hot core of the neon
 local G_MAIN   = col(0x00, 0xff, 0x41)   -- primary phosphor green
 local G_MID    = col(0x00, 0xb3, 0x2e)
-local G_DIM    = col(0x0c, 0x7a, 0x2a)
-local G_FAINT  = col(0x0a, 0x3a, 0x18)
-local G_TRACE  = col(0x06, 0x2a, 0x12)
-local BG_PANEL = col(0x02, 0x08, 0x04)
-local BG_DEEP  = col(0x01, 0x03, 0x02)
-local CYAN     = col(0x30, 0xf0, 0xff)
-local AMBER    = col(0xff, 0xb0, 0x20)
-local RED      = col(0xff, 0x30, 0x28)
-local WHITE    = col(0xe8, 0xff, 0xee)
+--  STRUCTURE vs DATA.  Structure (labels, panel borders, graticules) is a pale
+--  phosphor green matched to the control room's own monitors; live values stay
+--  the saturated G_MAIN green.  The two separate by SATURATION, not brightness,
+--  which is what buys structure the luminance it needs: the old deep green
+--  G_DIM sat at luma 106 while the panel behind it reached 124.
+local G_DIM    = col(0x63, 0xb4, 0x89)
+local G_FAINT  = col(0x25, 0x5c, 0x40)
+local G_TRACE  = col(0x0e, 0x33, 0x20)
+local BG_PANEL = col(0x02, 0x08, 0x0b)
+local BG_DEEP  = col(0x01, 0x03, 0x05)
+--  CYAN carries the mid-altitude band, so it must stay clearly bluer than both
+--  G_MAIN (green data) and G_DIM (mint structure).  The wallpaper's own blue is
+--  hue 173 -- only 25 deg off G_DIM -- so this deliberately runs bluer than the
+--  scene to keep the band legible.  Softer and less electric than the old
+--  #30f0ff, so it sits in a bright room rather than fighting it.
+local CYAN     = col(0x5e, 0xcf, 0xe8)
+local AMBER    = col(0xff, 0xb0, 0x20)   -- high band: left alone on purpose.  The
+                                         -- wallpaper holds only 19 px of amber --
+                                         -- no real match to chase
+local RED      = col(0xff, 0x30, 0x28)   -- emergency: stays red, nothing else claims it
+local WHITE    = col(0xe9, 0xf7, 0xfb)   -- runway white, no longer green-tinted
+-- Corner-bracket mark.  Sampled from the nearest (lower-left) monitor in the
+-- wallpaper -- the one that shows the colour best: #c0fde4, luma 238, sat 94%.
+-- Deliberately NOT G_MAIN: at the neon green's 100% saturation these read as a
+-- signal; 51 luma lighter they read as the bright mint bezel highlight.
+local MARK     = col(0xc0, 0xfd, 0xe4)
 
 -- ------------------------------------------------------------
 --  FONTS
@@ -175,9 +192,10 @@ local function glow_text(cr, s, x, y, fam, size, c, align, weight)
 end
 
 -- multi-pass neon stroke of the CURRENT path (keeps path alive)
-local function neon_path(cr, c, width)
+-- `join` defaults to ROUND; pass CAIRO_LINE_JOIN_MITER to keep hard corners.
+local function neon_path(cr, c, width, join)
     cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
-    cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND)
+    cairo_set_line_join(cr, join or CAIRO_LINE_JOIN_ROUND)
     cairo_set_line_width(cr, width * 3.6)
     rgba(cr, c, 0.08)
     cairo_stroke_preserve(cr)
@@ -226,27 +244,21 @@ local function rrect_path(cr, x, y, w, h, r)
     cairo_close_path(cr)
 end
 
--- a framed instrument panel
+-- Panel fill.  Was 0.86, which stacked on the base plate to 93.7% opaque and
+-- buried every section in a near-black box: panel luma 15, next to the radar's
+-- single plate at 92.  That double-darkening is what made the deck read heavy.
+-- 0.32 lets the base plate and the wallpaper through, landing near luma 56 while
+-- still leaving ~+104 of headroom under G_DIM -- far more than the radar needs.
 local function panel(cr, x, y, w, h, cut, label)
     chamfer_path(cr, x, y, w, h, cut)
-    rgba(cr, BG_PANEL, 0.86)
+    rgba(cr, BG_PANEL, 0.32)
     cairo_fill_preserve(cr)
     cairo_set_line_width(cr, 1.0 * S)
     rgba(cr, G_DIM, 0.85)
     cairo_stroke(cr)
 
-    -- corner brackets
-    local b = 7 * S
-    cairo_set_line_width(cr, 1.4 * S)
-    rgba(cr, G_MAIN, 0.9)
-    local corners = { { x, y, 1, 1 }, { x + w, y, -1, 1 },
-                      { x, y + h, 1, -1 }, { x + w, y + h, -1, -1 } }
-    for _, c in ipairs(corners) do
-        cairo_move_to(cr, c[1] + c[3] * b, c[2])
-        cairo_line_to(cr, c[1], c[2])
-        cairo_line_to(cr, c[1], c[2] + c[4] * b)
-        cairo_stroke(cr)
-    end
+    -- corner brackets deliberately NOT here: brackets belong to the widget's
+    -- outer frame, so the data panels stay plain and only the frame is marked.
 
     if label then
         text(cr, label, x + 9 * S, y + 14 * S, F_MONO, 8.5 * S,
@@ -428,7 +440,10 @@ local function hex_gauge(cr, cx, cy, r, frac, label, value, sub)
     cairo_move_to(cr, v[1][1], v[1][2])
     for i = 2, 6 do cairo_line_to(cr, v[i][1], v[i][2]) end
     cairo_close_path(cr)
-    rgba(cr, BG_DEEP, 0.9)
+    -- hex recess.  0.9 -> 0.62: at 0.9 of a luma-2.7 colour this punched a
+    -- true black hole in a now much lighter panel.  0.62 still composites to
+    -- ~23 against a ~56 panel, so it reads as depth rather than a void.
+    rgba(cr, BG_DEEP, 0.62)
     cairo_fill_preserve(cr)
     cairo_set_line_width(cr, 1.1 * S)
     rgba(cr, G_DIM, 0.8)
@@ -826,21 +841,50 @@ function conky_main()
     cairo_set_operator(cr, CAIRO_OPERATOR_OVER)
 
     -- clip everything to the frame
-    chamfer_path(cr, 6 * S, 6 * S, (GRID_W - 12) * S, (GRID_H - 12) * S, 16 * S)
+    chamfer_path(cr, 3 * S, 3 * S, (GRID_W - 6) * S, (GRID_H - 6) * S, 0)
     cairo_clip(cr)
 
-    -- deep plate
-    chamfer_path(cr, 6 * S, 6 * S, (GRID_W - 12) * S, (GRID_H - 12) * S, 16 * S)
-    rgba(cr, BG_PANEL, 0.55)
+    -- deep plate.  0.55 -> 0.42: lifts the gaps between panels too, so the whole
+    -- widget moves together instead of only the panel interiors.
+    chamfer_path(cr, 3 * S, 3 * S, (GRID_W - 6) * S, (GRID_H - 6) * S, 0)
+    rgba(cr, BG_PANEL, 0.42)
     cairo_fill(cr)
 
     draw_rain(cr, dt)
 
-    -- outer neon frame
-    chamfer_path(cr, 6 * S, 6 * S, (GRID_W - 12) * S, (GRID_H - 12) * S, 16 * S)
-    neon_path(cr, G_MAIN, 1.7 * S)
-    chamfer_path(cr, 10 * S, 10 * S, (GRID_W - 20) * S, (GRID_H - 20) * S, 13 * S)
+    -- outer neon frame.  cut 0 squares the corners off; MITER keeps the neon glow
+    -- from rounding them straight back off again at the stroke join.
+    chamfer_path(cr, 3 * S, 3 * S, (GRID_W - 6) * S, (GRID_H - 6) * S, 0)
+    neon_path(cr, G_MAIN, 1.7 * S, CAIRO_LINE_JOIN_MITER)
+
+    -- corner brackets, ON the outer frame: same 6*S rect the neon frame uses, arms
+    -- running inward, but heavier (2.1 vs the frame's 1.7) with butt caps so they
+    -- read as deliberate corner marks rather than vanishing into the neon glow.
+    local fx, fy = 3 * S, 3 * S
+    local fw, fh = (GRID_W - 6) * S, (GRID_H - 6) * S
+    local arm = 12 * S
+    cairo_set_line_width(cr, 2.1 * S)
+    cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT)
+    cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER)
+    rgba(cr, MARK, 0.95)
+    local fcs = { { fx, fy, 1, 1 }, { fx + fw, fy, -1, 1 },
+                   { fx, fy + fh, 1, -1 }, { fx + fw, fy + fh, -1, -1 } }
+    for _, c in ipairs(fcs) do
+        cairo_move_to(cr, c[1] + c[3] * arm, c[2])
+        cairo_line_to(cr, c[1], c[2])
+        cairo_line_to(cr, c[1], c[2] + c[4] * arm)
+        cairo_stroke(cr)
+    end
+
+    -- inner frame, pushed out from 10*S to 15*S.  At 4*S the two frames read as
+    -- one doubled edge rather than a bezel; 9*S now reads as a bezel, and matches
+    -- the radar's frame spacing.
+    -- inner frame, pushed out from 15*S to 13*S.  It was the inner frame crowding
+    -- the content, not the panels being too wide -- so both frames move outward
+    -- together and the 9*S bezel gap between them survives intact.
+    chamfer_path(cr, 12 * S, 12 * S, (GRID_W - 24) * S, (GRID_H - 24) * S, 0)
     cairo_set_line_width(cr, 0.7 * S)
+    cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER)
     rgba(cr, G_DIM, 0.7)
     cairo_stroke(cr)
 
@@ -851,7 +895,7 @@ function conky_main()
          CAIRO_FONT_WEIGHT_NORMAL, G_DIM, 1, 'left')
 
     local hhmmss = os.date('%H:%M:%S')
-    draw_clock(cr, hhmmss, 262 * S, 60 * S, 27 * S, up)
+    draw_clock(cr, hhmmss, 250 * S, 60 * S, 27 * S, up)
     text(cr, os.date('%a %d %b %Y'):upper(), 322 * S, 82 * S, F_MONO, 9.5 * S,
          CAIRO_FONT_WEIGHT_BOLD, G_MID, 1, 'right')
 
@@ -883,7 +927,7 @@ function conky_main()
         string.format('%.0f%%', disk))
 
     -- ============ SCOPE ============
-    panel(cr, 18 * S, 286 * S, 304 * S, 88 * S, 10 * S, 'NET.SCOPE')
+    panel(cr, 18 * S, 286 * S, 304 * S, 88 * S, 0, 'NET.SCOPE')
     local dn = st.net.dn; local upx = st.net.up
     text(cr, string.format('DN %6.1f KB/S', dn), 26 * S, 316 * S, F_MONO, 9.5 * S,
          CAIRO_FONT_WEIGHT_BOLD, G_MAIN, 1, 'left')
@@ -892,11 +936,11 @@ function conky_main()
     draw_scope(cr, 24 * S, 328 * S, 292 * S, 46 * S)
 
     -- ============ EQUALIZER ============
-    panel(cr, 18 * S, 380 * S, 304 * S, 90 * S, 10 * S, 'CORE.LOAD')
+    panel(cr, 18 * S, 380 * S, 304 * S, 90 * S, 0, 'CORE.LOAD')
     draw_eq(cr, 26 * S, 398 * S, 288 * S, 66 * S)
 
     -- ============ TELEMETRY ============
-    panel(cr, 18 * S, 478 * S, 304 * S, 160 * S, 10 * S, 'TELEMETRY')
+    panel(cr, 18 * S, 478 * S, 304 * S, 160 * S, 0, 'TELEMETRY')
     local ty = 510 * S
     local function row(lbl, val, c)
         text(cr, lbl, 28 * S, ty, F_MONO, 11 * S,
@@ -938,7 +982,7 @@ function conky_main()
     end
 
     -- ============ NOW PLAYING ============
-    panel(cr, 18 * S, 646 * S, 304 * S, 38 * S, 8 * S, 'NOW.PLAYING')
+    panel(cr, 18 * S, 646 * S, 304 * S, 38 * S, 0, 'NOW.PLAYING')
     local np = read_playing()
     local npx = 26 * S
     local npw = 288 * S
@@ -968,7 +1012,7 @@ function conky_main()
     cairo_restore(cr)
 
     -- ============ PROCESSES ============
-    panel(cr, 18 * S, 690 * S, 304 * S, 180 * S, 10 * S, 'PROC.TOP')
+    panel(cr, 18 * S, 690 * S, 304 * S, 180 * S, 0, 'PROC.TOP')
     local py = 716 * S
     for i = 1, 6 do
         local name = conky_parse('${top name ' .. i .. '}')

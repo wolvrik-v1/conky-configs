@@ -34,8 +34,10 @@ one-offs that share no family language.
 
 ## Screenshots
 
-Full-resolution captures — not downscaled. Captures for the remaining themes are
-still to do; see [`ATTRIBUTION.md`](ATTRIBUTION.md) for credits.
+Full-resolution captures — not downscaled. Where a family shares one visual
+language, a single capture of the whole family running together is used in place
+of separate per-theme shots. Captures for the remaining themes are still to do;
+see [`ATTRIBUTION.md`](ATTRIBUTION.md) for credits.
 
 ### orrery-brass
 
@@ -55,13 +57,11 @@ All three together:
 
 ![etched family](etched/screenshot.png)
 
-### cyber-atc
+### cyber-deck · cyber-radar · cyber-atc
 
-![cyber-atc](cyber-atc/screenshot.png)
+All three together, running against the theme wallpaper:
 
-### metal-pianobar
-
-![metal-pianobar](metal-pianobar/screenshot.png)
+![cyber family](cyber-deck/CyberdeckFamily-10-03-2026.png)
 
 ## Installation
 

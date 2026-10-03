@@ -61,11 +61,17 @@ monospace dial if HOOGE is missing; `DejaVu Sans Mono` is the closest stand-in.
 | `etched/wallpapers/etched-obsidian-dark.png` | etched | provenance unknown — the author does not recall its source |
 | `etched/wallpapers/tea-hd-wallpaper.jpg` | etched | provenance unknown — the author does not recall its source |
 | `clockwork-alchemist/wallpapers/wallpaper-steampunk3.jpg` | clockwork-alchemist | Generated for this theme by the author with Google's image generator |
+| `cyber-deck/wallpapers/Official_Cyberpunk_Control_Tower.jpg` | cyber family | AI-generated cyberpunk control-tower scene obtained from Google's image generator; the author sharpened a local copy for use as the desktop wallpaper |
 
-Of the six bundled wallpapers: two are AI-generated artwork the author made for
-the theme they belong to, one is credited to **skyvictor79** via Pixabay, and
+Of the seven bundled wallpapers: three are AI-generated artwork the author made
+for the theme they belong to, one is credited to **skyvictor79** via Pixabay, and
 three have no known origin. If you ever trace them, update this table — an
 honest "unknown" is better than a guess.
+
+Note on the cyber wallpaper: the file bundled here is the unmodified image as
+downloaded. The copy actually set as the desktop background was run through a
+sharpening pass locally for on-screen use; the sharpened variant is not included,
+since it is a derived edit rather than the source artwork.
 
 ## Code
 
@@ -80,3 +86,7 @@ repository are original work, except:
 
 Captured on Bodhi Linux / Moksha with Conky 1.12.2. Kept at full resolution; they
 are not resized for the web.
+
+`cyber-deck/CyberdeckFamily-10-03-2026.png` captures all three Cyber widgets
+running at once against the bundled wallpaper, and stands in for separate
+per-theme captures of `cyber-deck`, `cyber-radar` and `cyber-atc`.
