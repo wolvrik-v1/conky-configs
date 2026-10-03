@@ -28,6 +28,7 @@ cyber-atc		$HOME/.conky/cyber-atc
 clockwidget		$HOME/.conky/clockwidget
 clockwork-alchemist	$HOME/.conky/clockwork-alchemist
 bionic			$HOME/.conky/bionic
+orrery-brass		$HOME/.conky/orrery-brass
 "
 
 EXCL=()
@@ -50,6 +51,16 @@ add_excl '*.key'
 add_excl 'clockswitch'
 add_excl 'fav_check.png'
 add_excl 'preview.jpg'
+add_excl '*.checkpoint-*'
+add_excl '*.pre-*'
+add_excl 'debug'
+
+# Fonts are repo-owned. They ship in the release zip but are not kept in the
+# live widget dir, so `rsync --delete` would strip them on every sync. rsync
+# leaves excluded files alone unless --delete-excluded is passed, so excluding
+# 'fonts' both protects them from deletion and keeps them out of the sync set.
+add_excl 'fonts'
+
 add_excl 'README.md'
 add_excl 'screenshot.png'
 

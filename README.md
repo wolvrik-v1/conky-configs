@@ -28,6 +28,7 @@ terminal. Classics keep their original brand names.
 | **clockwidget** | Interactive analog clock + month calendar (click the LED to flip clock/calendar, auto-returns after 10 s). Original jpope 2010 face, modernised. |
 | **clockwork-alchemist** | Steampunk wall clock: skeleton dial with gear train, brass steam pipes, copper boiler, PSI dial, thermometer, CPU/RAM gauges, six readout plaques. 100% procedural Cairo. |
 | **bionic** | Classic "Steel Conky by Mucas V2.0" plate (243x887 artwork) with sector-ring gauges: CPU / MEM / WLAN / TIME / BATTERY / VOLUME. |
+| **orrery-brass** | Standalone mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
 
 ## Installation
 

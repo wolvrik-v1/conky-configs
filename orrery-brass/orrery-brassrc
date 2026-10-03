@@ -1,0 +1,46 @@
+conky.config = {
+	background = false,
+	update_interval = 0.2,
+
+	override_utf8_locale = true,
+
+	double_buffer = true,
+	text_buffer_size = 4096,
+
+	use_xft = true,
+	font = 'DejaVu Sans Mono:size=10',
+	xftalpha = 0.9,
+
+	own_window = true,
+	own_window_transparent = true,
+	own_window_argb_visual = true,
+	own_window_type = 'dock',
+	own_window_argb_value = 255,
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	own_window_class = 'conky-orrery-brass',
+	own_window_colour = '000000',
+
+	default_color = '#e8c87c',
+	color0 = '#e8c87c',
+	color1 = '#d8b86a',
+	color2 = '#6a5a34',
+	border_inner_margin = 0,
+	border_outer_margin = 0,
+
+	minimum_width = 780, maximum_width = 780,
+	minimum_height = 850,
+	alignment = 'middle_left',
+	xinerama_head = 1,
+	gap_x = -1413,
+	gap_y = -2,
+
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+
+	lua_load = '~/.conky/orrery-brass/orrery-brass.lua',
+	lua_draw_hook_pre = 'conky_main',
+};
+
+conky.text = [[ ]];

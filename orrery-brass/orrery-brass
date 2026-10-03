@@ -1,0 +1,35 @@
+#!/bin/sh
+# orrery-brass - start/stop/restart wrapper for the BRASS edition of the
+# Orrery clock widget (the pre-cyber astrolabe dial, kept as a variant).
+#
+# Do not run this and the cyber `orrery` at the same time: both are 780x850
+# on xinerama_head 1 and will stack on top of each other.
+#
+# The pkill pattern is deliberately `orrery-brassrc`, which cannot match the
+# cyber widget's `orreryrc` -- "orreryrc" is not a substring of
+# "orrery-brassrc", so the two wrappers never kill each other.
+RC="$HOME/.conky/orrery-brass/orrery-brassrc"
+LOG="$HOME/.conky/orrery-brass/orrery-brass.log"
+case "$1" in
+  start)
+    echo "[orrery-brass] start $(date +%T)" >>"$LOG"
+    setsid conky -d -c "$RC" </dev/null >>"$LOG" 2>&1 &
+    ;;
+  restart)
+    echo "[orrery-brass] restart $(date +%T)" >>"$LOG"
+    pkill -f "[c]onky .*orrery-brassrc" 2>/dev/null
+    sleep 1
+    setsid conky -d -c "$RC" </dev/null >>"$LOG" 2>&1 &
+    ;;
+  stop)
+    echo "[orrery-brass] stop $(date +%T)" >>"$LOG"
+    pkill -f "[c]onky .*orrery-brassrc" 2>/dev/null
+    ;;
+  status)
+    pgrep -af "[c]onky .*orrery-brassrc"
+    ;;
+  *)
+    echo "usage: $0 {start|stop|restart|status}"; exit 1
+    ;;
+esac
+exit 0
