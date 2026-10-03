@@ -11,24 +11,57 @@ Free to use, modify, and share.
 ## Themes
 
 The themes are organised into **families** that share a visual language. The
-metal family is a cool black-metal gauge style; the etched family is a minimal
-Etched-style stat/player/weather set; the cyber family is green-on-black
-terminal. Classics keep their original brand names.
+**Metal** family is a cool black-metal gauge style; **Etched** is a minimal
+Etched-style stat/player/weather set; **Cyber** is green-on-black terminal.
+**Classics** keep their original brand names, and **Standalone** themes are
+one-offs that share no family language.
 
-| Theme | Description |
-| :--- | :--- |
-| **metal-sysmon** | Full system monitor: title plate with ROOT/HOME half-ring gauges, 4 clock-style CPU speedometer dials with load %, PROCESSES, NETWORK. Cool black-metal finish. |
-| **metal-clock** | The original jpope 2010 clock face with 12 long light-grey major ticks + 48 minors, hands emanating from the inner date/time/day circle. |
-| **metal-pianobar** | Metal-gauge pianobar now-playing widget. |
-| **etched** | Etched-style stat column (clock, CPU/RAM/temps, disks, network) with an Ubuntu-font face. |
-| **etched-pianobar** | Minimal pianobar card (cyan accents, no panel): track, artist, album, progress, state dots, album art. |
-| **etched-weather** | Horizontal weather card: NOW panel + details grid + full-width 5-day forecast row. OpenWeather API. |
-| **cyber-deck** | Green-on-black cyberpunk terminal: hex CPU gauges, NET.SCOPE, telemetry, core bars, now-playing marquee, top processes. |
-| **cyber-radar** | Standalone ADS-B radar scope reading the live `adsb_radar.py` daemon (feed: adsb.lol): rotating sweep, aircraft blips + callsigns. |
-| **clockwidget** | Interactive analog clock + month calendar (click the LED to flip clock/calendar, auto-returns after 10 s). Original jpope 2010 face, modernised. |
-| **clockwork-alchemist** | Steampunk wall clock: skeleton dial with gear train, brass steam pipes, copper boiler, PSI dial, thermometer, CPU/RAM gauges, six readout plaques. 100% procedural Cairo. |
-| **bionic** | Classic "Steel Conky by Mucas V2.0" plate (243x887 artwork) with sector-ring gauges: CPU / MEM / WLAN / TIME / BATTERY / VOLUME. |
-| **orrery-brass** | Standalone mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
+| Theme | Family | Description |
+| :--- | :--- | :--- |
+| **metal-sysmon** | **Metal** | Full system monitor: title plate with ROOT/HOME half-ring gauges, 4 clock-style CPU speedometer dials with load %, PROCESSES, NETWORK. Cool black-metal finish. |
+| **metal-clock** | **Metal** | The original jpope 2010 clock face with 12 long light-grey major ticks + 48 minors, hands emanating from the inner date/time/day circle. |
+| **metal-pianobar** | **Metal** | Metal-gauge pianobar now-playing widget. Part of the **Metal** family, not a pianobar variant — it wears the same black-metal instrument styling as `metal-sysmon` and `metal-clock`. |
+| **etched** | **Etched** | Etched-style stat column (clock, CPU/RAM/temps, disks, network) with an Ubuntu-font face. |
+| **etched-pianobar** | **Etched** | Minimal pianobar card (cyan accents, no panel): track, artist, album, progress, state dots, album art. |
+| **etched-weather** | **Etched** | Horizontal weather card: NOW panel + details grid + full-width 5-day forecast row. OpenWeather API. |
+| **cyber-deck** | **Cyber** | Green-on-black cyberpunk terminal: hex CPU gauges, NET.SCOPE, telemetry, core bars, now-playing marquee, top processes. |
+| **cyber-radar** | **Cyber** | Standalone ADS-B radar scope reading the live `adsb_radar.py` daemon (feed: adsb.lol): rotating sweep, aircraft blips + callsigns. |
+| **cyber-atc** | **Cyber** | Live flight manifest from the same ADS-B daemon: one row per aircraft (callsign, airline, type, altitude, speed, range), plus MIL / emergency badges and a live METAR strip. |
+| **clockwidget** | Classics | Interactive analog clock + month calendar (click the LED to flip clock/calendar, auto-returns after 10 s). Original jpope 2010 face, modernised. |
+| **clockwork-alchemist** | Classics | Steampunk wall clock: skeleton dial with gear train, brass steam pipes, copper boiler, PSI dial, thermometer, CPU/RAM gauges, six readout plaques. 100% procedural Cairo. |
+| **bionic** | Classics | Classic "Steel Conky by Mucas V2.0" plate (243x887 artwork) with sector-ring gauges: CPU / MEM / WLAN / TIME / BATTERY / VOLUME. |
+| **orrery-brass** | Standalone | Mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
+
+## Screenshots
+
+Full-resolution captures — not downscaled. Captures for the remaining themes are
+still to do; see [`ATTRIBUTION.md`](ATTRIBUTION.md) for credits.
+
+### orrery-brass
+
+![orrery-brass](orrery-brass/screenshot.png)
+
+### clockwork-alchemist
+
+![clockwork-alchemist](clockwork-alchemist/screenshot.png)
+
+### bionic
+
+![bionic](bionic/screenshot.png)
+
+### etched · etched-pianobar · etched-weather
+
+All three together:
+
+![etched family](etched/screenshot.png)
+
+### cyber-atc
+
+![cyber-atc](cyber-atc/screenshot.png)
+
+### metal-pianobar
+
+![metal-pianobar](metal-pianobar/screenshot.png)
 
 ## Installation
 

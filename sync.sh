@@ -6,9 +6,10 @@
 #   ./sync.sh            dry-run (show what would be copied)
 #   ./sync.sh --apply    actually sync
 #
-# Repo-authored files (README.md, screenshot.png, .gitignore) are excluded
-# so they survive rsync --delete. Runtime logs, backups, session state and
-# secrets are never copied. Live install dirs are never modified.
+# Repo-authored files (README.md, ATTRIBUTION.md, screenshots/, wallpapers/,
+# fonts/ and .gitignore) are excluded so they survive rsync --delete. Runtime
+# logs, backups, session state and secrets are never copied. Live install dirs
+# are never modified.
 # ---------------------------------------------------------------------------
 set -eu
 
@@ -61,8 +62,16 @@ add_excl 'debug'
 # 'fonts' both protects them from deletion and keeps them out of the sync set.
 add_excl 'fonts'
 
-add_excl 'README.md'
+# Release imagery is repo-owned. Screenshots (kept at full resolution) and the
+# bundled wallpapers ship in the release zips but are not kept in the live
+# widget dirs, so `rsync --delete` would strip them on every sync. Excluding
+# them keeps them in place and out of the sync set.
+add_excl 'wallpapers'
 add_excl 'screenshot.png'
+add_excl 'screenshot-*.png'
+
+add_excl 'README.md'
+add_excl 'ATTRIBUTION.md'
 
 MODE="dry-run"
 [ "${1:-}" = "--apply" ] && MODE="apply"
