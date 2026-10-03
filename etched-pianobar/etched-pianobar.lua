@@ -816,6 +816,10 @@ function conky_render_panel()
         end
     end
 
+    -- Elapsed / total use DS-Digital for the seven-segment look. That font is
+    -- not bundled (shareware, no redistribution grant) -- get it from
+    -- https://www.dafont.com/ds-digital.font , or fontconfig substitutes a
+    -- default face and the widget still renders.
     draw_text(
         elapsed_text,
         X,

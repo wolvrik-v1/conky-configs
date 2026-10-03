@@ -70,9 +70,22 @@ live. Runtime logs, backups, session state and API keys are always excluded.
 ## Fonts
 
 Themes need their bundled `fonts/` installed system-wide or placed in
-`~/.local/share/fonts/` and refreshed with `fc-cache -fv`. Fonts used across
-the set: **HOOGE 05_54/53**, **DejaVu Sans Mono**, **Ubuntu**, **DS-Digital**
-(all bundled in their theme folders).
+`~/.local/share/fonts/` and refreshed with `fc-cache -fv`.
+
+Fonts used across the set:
+
+| Font | Status |
+| --- | --- |
+| **Ubuntu** | bundled — © 2010 Canonical Ltd., [Ubuntu Font Licence 1.0](etched/fonts/LICENSE-UFL-1.0.txt) |
+| **HOOGE 05_54/53** | **not bundled** — no redistribution grant. Needed by `bionic`; get it from <https://www.dafont.com/craig-kroeger.d840> |
+| **DejaVu Sans Mono** | ships with most Linux distros |
+| **DS-Digital** | **not bundled** — shareware, no redistribution grant. Get it from <https://www.dafont.com/ds-digital.font> |
+
+Nothing breaks if a font is missing: the widgets reference fonts by family name
+and fontconfig substitutes a default face. See
+[`etched/fonts/README.md`](etched/fonts/README.md) and
+[`bionic/fonts/README.md`](bionic/fonts/README.md) for the full details,
+including the family-name check to run after installing HOOGE.
 
 ## Support
 

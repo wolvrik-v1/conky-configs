@@ -27,8 +27,12 @@ function conky_render_panel()
     local text_gray    = {0.47, 0.47, 0.47, 1.0}
 
     -- Numeric readout font. 'Ubuntu' is the default look; set this to
-    -- 'DS-Digital' for the original seven-segment face (the fonts/DS-DIGI*.TTF
-    -- in the package). DS-Digital is a narrow face, so it carries its own
+    -- 'DS-Digital' for the original seven-segment face. DS-Digital is NOT
+    -- bundled -- it is shareware with no redistribution grant, so install it
+    -- yourself from https://www.dafont.com/ds-digital.font (see
+    -- fonts/README.md). If it is absent, fontconfig substitutes a default
+    -- face and the readouts still render.
+    -- DS-Digital is a narrow face, so it carries its own
     -- larger point sizes -- hence the table rather than one shared size.
     -- Labels (Cpu, Ram, Temp, Net, ...) always stay on Ubuntu.
     local NUM_FONT = 'Ubuntu'

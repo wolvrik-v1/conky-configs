@@ -29,6 +29,10 @@ local DIALS = {
 -- the ORIGINAL plate artwork (160x590). Keep it as-is.
 local BG_PATH = os.getenv('HOME') .. '/.conky/bionic/pix/bg-blue2.png'
 
+-- HOOGE 05_54 is NOT bundled (no redistribution grant). Install it from
+-- <https://www.dafont.com/craig-kroeger.d840>, then run
+-- `fc-list | grep -i 05_5` -- if the family reports as 'uni 05_54', change the
+-- name below. See fonts/README.md. If absent, fontconfig substitutes a default.
 local F_RINGS = 'hooge 05_54'
 local F_MONO  = 'DejaVu Sans Mono'
 local F_SANS  = 'DejaVu Sans'
