@@ -71,18 +71,18 @@ All three together, running against the theme wallpaper:
    ```bash
    sudo apt install conky-all lua5.1 fonts-font-awesome
    ```
-   Each theme lists its extra runtime deps (e.g. `cava`, `pianobar`, `pactl`,
-   `python3`) in its own README.
+   A few themes need extra runtime deps (`pianobar`, `cava`, `pactl`, `python3`)
+   or an API key. Only `bionic` and `clockwidget` ship a README of their own, so
+   check a theme's files before assuming it runs standalone.
 2. **Clone this repo**:
    ```bash
    git clone https://github.com/wolvrik-v1/conky-configs.git ~/conky-configs
    # install the ~/.conky-style themes (clocks, monitors, radar and the cyber deck)
-   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,cyber-deck,cyber-radar,etched} ~/.conky/
+   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass} ~/.conky/
    # install the ~/.config themes (pianobar players + weather API widget)
    cp -r ~/conky-configs/{metal-pianobar,etched-pianobar,etched-weather} ~/.config/
    ```
-3. **Run a theme**: read that theme's README (each one has launch + tuning notes).
-   Most ship a `./<name>` start/stop/restart wrapper or launch with:
+3. **Run a theme**: most ship a `./<name>` start/stop/restart wrapper, or launch with:
    ```bash
    conky -c ~/.conky/<theme>/<config>
    ```
