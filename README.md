@@ -5,8 +5,10 @@ A collection of handcrafted **Lua/Cairo** Conky themes (modern `conky.config = {
 Free to use, modify, and share.
 
 > Several of these were built together with AI assistants over many live-tuning
-> sessions, from original community designs. Attribution for the source designs
-> is noted in each theme's README and preserved in each theme's files.
+> sessions, from original community designs, and **three of the bundled
+> wallpapers are AI-generated artwork**. Full per-file provenance — source
+> designs, AI contributions, third-party fonts and artwork — is recorded in
+> [`ATTRIBUTION.md`](ATTRIBUTION.md).
 
 ## Themes
 
