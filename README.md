@@ -45,6 +45,12 @@ language, a single capture of the whole family running together is used in place
 of separate per-theme shots. Captures for the remaining themes are still to do;
 see [`ATTRIBUTION.md`](ATTRIBUTION.md) for credits.
 
+### Metal family
+
+metal-sysmon · metal-clock · metal-pianobar — all three together:
+
+![metal family](metal-sysmon/screenshot.png)
+
 ### Brass family
 
 All five together:
