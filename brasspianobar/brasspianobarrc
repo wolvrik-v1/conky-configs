@@ -1,0 +1,60 @@
+-- ############################################################
+--  brasspianobar -- Conky config (Steampunk Theme)
+-- ############################################################
+
+local HOME       = os.getenv('HOME') or os.getenv('USERPROFILE') or ''
+local XDG_CONFIG = os.getenv('XDG_CONFIG_HOME') or (HOME .. '/.config')
+local LUA_PATH   = HOME .. '/.conky/brasspianobar/brasspianobar.lua'
+
+conky.config = {
+    update_interval       = 0.25,   -- 19%->~16% CPU; both marquees still read as smooth
+    cpu_avg_samples       = 2,
+    net_avg_samples       = 2,
+    double_buffer         = true,
+    no_buffers            = true,
+    text_buffer_size      = 4096,
+    imlib_cache_size      = 0,
+
+    own_window            = true,
+    own_window_type       = 'dock',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_argb_value  = 255,   -- opaque window, matching brass-orrery
+                                     -- (was 0: the corners of the plate disc
+                                     -- stayed transparent and bled wallpaper)
+    own_window_colour      = '000000',
+    own_window_hints       = 'undecorated,sticky,skip_taskbar,skip_pager,below',
+    own_window_class       = 'conky-brasspianobar',
+    border_inner_margin    = 0,
+    border_outer_margin    = 0,
+
+    minimum_width         = 531,
+    minimum_height        = 531,
+    maximum_width         = 531,
+
+    alignment             = 'bottom_left',
+    gap_x                 = 14,
+    gap_y                 = 14,
+
+    draw_shades           = false,
+    draw_outline          = false,
+    draw_borders          = false,
+    draw_graph_borders    = false,
+
+    use_xft               = true,
+    font                  = 'DejaVu Sans:size=9',
+    xftalpha              = 0.8,
+    override_utf8_locale  = true,
+    uppercase             = false,
+    use_spacer            = 'left',
+
+    default_color         = 'F4EBD8',
+    color1                = 'DFB15B',
+    color2                = 'B8860B',
+    color3                = 'D2691E',
+
+    lua_load              = LUA_PATH,
+    lua_draw_hook_pre     = 'draw_now_playing',
+}
+
+conky.text = [[ ]];

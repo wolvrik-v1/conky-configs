@@ -1,0 +1,35 @@
+-- ############################################################
+--  brass-sysmon -- round brass system monitor, top-left
+--  Grid is 280; the dock lands at ~0.94 of the requested size,
+--  so ask for 273 to get a ~280 window (measured on brassviz).
+-- ############################################################
+
+conky.config = {
+    alignment = 'top_left',
+    gap_x = 104,
+    gap_y = 34,
+    minimum_width = 332,
+    maximum_width = 332,
+    minimum_height = 332,
+    maximum_height = 332,
+    update_interval = 0.5,
+    double_buffer = true,
+    no_buffers = true,
+    own_window = true,
+    own_window_type = 'dock',
+    own_window_argb_visual = true,
+    own_window_argb_value = 255,
+    own_window_transparent = true,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_class = 'conky-brass-sysmon',
+    border_width = 0,
+    draw_borders = false,
+    draw_graph_borders = false,
+    draw_outline = false,
+    draw_shades = false,
+    use_xft = false,
+    lua_load = '~/.conky/brass-sysmon/brass-sysmon.lua',
+    lua_draw_hook_pre = 'main',
+}
+
+conky.text = [[ ]]

@@ -838,14 +838,28 @@ local function hud_plate(cr,riw,row,t0,t1)
   end
 end
 
+-- BYTE-SLICE HAZARD. `str:sub(i,i)` hands cairo one BYTE, so any multi-byte
+-- UTF-8 character arrives as a fragment. cairo_text_extents() then reports
+-- CAIRO_STATUS_INVALID_UTF8 (measured as cairo_status()==8) and that status is
+-- PERMANENT for the context: every later draw call becomes a silent no-op with
+-- no Lua error raised, so the log stays clean while rings, plaques and bezel
+-- all vanish together. `#str` is also a BYTE count, so the loop above would
+-- run the wrong number of times as well as slice wrongly. Split into proper
+-- characters first. Same helper as brasspianobar.lua, which hit this live.
+local function glyphs(str)
+  local t={}
+  for _,c in utf8.codes(str) do t[#t+1]=utf8.char(c) end
+  return t
+end
+
 -- angular width of a set of strings, in radians. Uses the shared EXT.
 local function arc_span(cr,rad,segs)
   local total=0
   for _,sg in ipairs(segs) do
     cairo_select_font_face(cr,FMONO,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_BOLD)
     cairo_set_font_size(cr,sg.size*S)
-    for i=1,#sg.str do
-      cairo_text_extents(cr,sg.str:sub(i,i),EXT)
+    for _,g in ipairs(glyphs(sg.str)) do
+      cairo_text_extents(cr,g,EXT)
       total=total+EXT.x_advance
     end
   end
@@ -863,9 +877,9 @@ local function arc_text(cr,cx,cy,rad,ang_center,segs,rot_off)
   for _,sg in ipairs(segs) do
     cairo_select_font_face(cr,FMONO,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_BOLD)
     cairo_set_font_size(cr,sg.size*S)
-    for i=1,#sg.str do
-      cairo_text_extents(cr,sg.str:sub(i,i),EXT)
-      chars[#chars+1]={ch=sg.str:sub(i,i),adv=EXT.x_advance,bearx=EXT.x_bearing,
+    for _,g in ipairs(glyphs(sg.str)) do
+      cairo_text_extents(cr,g,EXT)
+      chars[#chars+1]={ch=g,adv=EXT.x_advance,bearx=EXT.x_bearing,
         w=EXT.width,h=EXT.height,beary=EXT.y_bearing,sg=sg}
     end
   end

@@ -1,0 +1,40 @@
+#!/bin/bash
+# brass-sysmon -- start / stop / restart the brass system monitor
+# conky-only wrapper (no companion processes to manage).
+set -u
+
+DIR="$HOME/.conky/brass-sysmon"
+RC="$DIR/brass-sysmonrc"
+LOG="$DIR/brass-sysmon.log"
+PAT='[c]onky .*brass-sysmonrc'
+
+start() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "brass-sysmon already running"
+        return 0
+    fi
+    setsid conky -d -c "$RC" </dev/null >>"$LOG" 2>&1 &
+    disown
+    echo "brass-sysmon started"
+}
+
+stop() {
+    pkill -f "$PAT" 2>/dev/null
+    echo "brass-sysmon stopped"
+}
+
+status() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "brass-sysmon running (pid $(pgrep -f "$PAT" | head -1))"
+    else
+        echo "brass-sysmon not running"
+    fi
+}
+
+case "${1:-start}" in
+    start)   start ;;
+    stop)    stop ;;
+    restart) stop; sleep 1; start ;;
+    status)  status ;;
+    *)       echo "usage: $0 {start|stop|restart|status}"; exit 1 ;;
+esac

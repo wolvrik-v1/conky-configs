@@ -1,0 +1,48 @@
+#!/bin/bash
+# brassviz -- start / stop / restart the round brass audio visualiser.
+# The renderer self-spawns its cava feed (reader + cava) on load, but stop()
+# sweeps those companions too so a stopped widget leaves nothing running.
+set -u
+
+DIR="$HOME/.conky/brassviz"
+RC="$DIR/brassvizrc"
+LOG="$DIR/brassviz.log"
+PAT='[c]onky .*brassvizrc'
+FPAT='cava_brassviz_re[a]der'
+
+start() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "brassviz already running"
+        return 0
+    fi
+    setsid conky -d -c "$RC" </dev/null >>"$LOG" 2>&1 &
+    disown
+    echo "brassviz started"
+}
+
+stop() {
+    pkill -f "$PAT" 2>/dev/null
+    pkill -f "$FPAT" 2>/dev/null
+    echo "brassviz stopped"
+}
+
+status() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "brassviz running (pid $(pgrep -f "$PAT" | head -1))"
+    else
+        echo "brassviz not running"
+    fi
+    if pgrep -f "$FPAT" >/dev/null 2>&1; then
+        echo "feed running"
+    else
+        echo "feed not running"
+    fi
+}
+
+case "${1:-start}" in
+    start)   start ;;
+    stop)    stop ;;
+    restart) stop; sleep 1; start ;;
+    status)  status ;;
+    *)       echo "usage: $0 {start|stop|restart|status}"; exit 1 ;;
+esac

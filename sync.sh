@@ -30,6 +30,10 @@ clockwidget		$HOME/.conky/clockwidget
 clockwork-alchemist	$HOME/.conky/clockwork-alchemist
 bionic			$HOME/.conky/bionic
 orrery-brass		$HOME/.conky/orrery-brass
+brasspianobar		$HOME/.conky/brasspianobar
+brassviz		$HOME/.conky/brassviz
+brass-sysmon		$HOME/.conky/brass-sysmon
+brass-lyrics		$HOME/.conky/brass-lyrics
 "
 
 EXCL=()
@@ -55,6 +59,7 @@ add_excl 'preview.jpg'
 add_excl '*.checkpoint-*'
 add_excl '*.pre-*'
 add_excl 'debug'
+add_excl 'plaque-mode'
 
 # Fonts are repo-owned. They ship in the release zip but are not kept in the
 # live widget dir, so `rsync --delete` would strip them on every sync. rsync
@@ -74,10 +79,21 @@ add_excl 'README.md'
 add_excl 'ATTRIBUTION.md'
 
 MODE="dry-run"
-[ "${1:-}" = "--apply" ] && MODE="apply"
+[ "${1:-}" = "--apply" ] && { MODE="apply"; shift; }
+
+# Optional: restrict the sync to one or more theme names, e.g.
+#   ./sync.sh --apply brasspianobar brassviz brass-sysmon brass-lyrics
+# With no extra args every pair is synced.
+ONLY="${*:-}"
 
 printf '%s\n' "$PAIRS" | while IFS=$'\t' read -r name src; do
   [ -z "$name" ] && continue
+  if [ -n "$ONLY" ]; then
+    case " $ONLY " in
+      *" $name "*) : ;;
+      *) continue ;;
+    esac
+  fi
   [ -d "$src" ] || { echo "MISSING SOURCE: $src"; continue; }
   dest="$ROOT/$name"
   mkdir -p "$dest"

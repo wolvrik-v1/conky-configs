@@ -57,7 +57,7 @@ monospace dial if HOOGE is missing; `DejaVu Sans Mono` is the closest stand-in.
 | `bionic/scripts/rings.lua` | bionic | `v1.0 by wlourf (08.08.2010)` — header preserved verbatim |
 | `bionic/wallpapers/skyvictor79-alien-10211544_1920.jpg` | bionic | **skyvictor79**, via [Pixabay](https://pixabay.com) |
 | `bionic/wallpapers/bionic.jpg` | bionic | provenance unknown — the author does not recall its source |
-| `orrery-brass/wallpapers/ORRERY1.jpg` | orrery-brass | Generated for this theme by the author with Google's image generator |
+| `orrery-brass/wallpapers/ORRERY1-clean.png` | orrery-brass | Generated for this theme by the author with Google's image generator; watermark removed by the author |
 | `etched/wallpapers/etched-obsidian-dark.png` | etched | provenance unknown — the author does not recall its source |
 | `etched/wallpapers/tea-hd-wallpaper.jpg` | etched | provenance unknown — the author does not recall its source |
 | `clockwork-alchemist/wallpapers/wallpaper-steampunk3.jpg` | clockwork-alchemist | Generated for this theme by the author with Google's image generator |

@@ -14,9 +14,9 @@ Free to use, modify, and share.
 
 The themes are organised into **families** that share a visual language. The
 **Metal** family is a cool black-metal gauge style; **Etched** is a minimal
-Etched-style stat/player/weather set; **Cyber** is green-on-black terminal.
-**Classics** keep their original brand names, and **Standalone** themes are
-one-offs that share no family language.
+Etched-style stat/player/weather set; **Cyber** is green-on-black terminal;
+**Brass** is a round brass-instrument set on near-black. **Classics** keep their
+original brand names.
 
 | Theme | Family | Description |
 | :--- | :--- | :--- |
@@ -32,7 +32,11 @@ one-offs that share no family language.
 | **clockwidget** | Classics | Interactive analog clock + month calendar (click the LED to flip clock/calendar, auto-returns after 10 s). Original jpope 2010 face, modernised. |
 | **clockwork-alchemist** | Classics | Steampunk wall clock: skeleton dial with gear train, brass steam pipes, copper boiler, PSI dial, thermometer, CPU/RAM gauges, six readout plaques. 100% procedural Cairo. |
 | **bionic** | Classics | Classic "Steel Conky by Mucas V2.0" plate (243x887 artwork) with sector-ring gauges: CPU / MEM / WLAN / TIME / BATTERY / VOLUME. |
-| **orrery-brass** | Standalone | Mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
+| **orrery-brass** | **Brass** | Mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
+| **brass-sysmon** | **Brass** | Round brass system monitor: four clock-style speedometer dials (CPU / MEM / NET / TEMP) around a centre LOAD / NET strip, `MK.I` maker's mark. |
+| **brass-lyrics** | **Brass** | Round brass lyrics display: karaoke-synced lyrics fetched live from LRCLIB, title/artist curved on the bezel, progress sweep, graceful fetching/offline fallbacks. |
+| **brasspianobar** | **Brass** | Round brass now-playing widget for pianobar: album art in the well, track / artist / album, progress sweep, pause/play state. |
+| **brassviz** | **Brass** | Round brass audio spectrum visualiser driven by CAVA: twelve radial bands, a live level rail and peak-hold markers. |
 
 ## Screenshots
 
@@ -41,9 +45,15 @@ language, a single capture of the whole family running together is used in place
 of separate per-theme shots. Captures for the remaining themes are still to do;
 see [`ATTRIBUTION.md`](ATTRIBUTION.md) for credits.
 
-### orrery-brass
+### Brass family
+
+orrery-brass · brass-sysmon · brass-lyrics · brasspianobar · brassviz
 
 ![orrery-brass](orrery-brass/screenshot.png)
+![brass-sysmon](brass-sysmon/screenshot.png)
+![brass-lyrics](brass-lyrics/screenshot.png)
+![brasspianobar](brasspianobar/screenshot.png)
+![brassviz](brassviz/screenshot.png)
 
 ### clockwork-alchemist
 
@@ -78,7 +88,7 @@ All three together, running against the theme wallpaper:
    ```bash
    git clone https://github.com/wolvrik-v1/conky-configs.git ~/conky-configs
    # install the ~/.conky-style themes (clocks, monitors, radar and the cyber deck)
-   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass} ~/.conky/
+   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass,brasspianobar,brassviz,brass-sysmon,brass-lyrics} ~/.conky/
    # install the ~/.config themes (pianobar players + weather API widget)
    cp -r ~/conky-configs/{metal-pianobar,etched-pianobar,etched-weather} ~/.config/
    ```

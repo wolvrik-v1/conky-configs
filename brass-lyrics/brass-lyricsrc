@@ -1,0 +1,35 @@
+-- ############################################################
+--  brass-lyrics -- round brass lyrics display, top-right
+--  Grid is 280; the dock lands at ~281 for a request of 273
+--  (measured on brass-sysmon: the dock ADDS ~8px, it does not shrink).
+-- ############################################################
+
+conky.config = {
+    alignment = 'top_right',
+    gap_x = 104,
+    gap_y = 34,
+    minimum_width = 332,
+    maximum_width = 332,
+    minimum_height = 332,
+    maximum_height = 332,
+    update_interval = 0.1,
+    double_buffer = true,
+    no_buffers = true,
+    own_window = true,
+    own_window_type = 'dock',
+    own_window_argb_visual = true,
+    own_window_argb_value = 255,
+    own_window_transparent = true,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_class = 'conky-brass-lyrics',
+    border_width = 0,
+    draw_borders = false,
+    draw_graph_borders = false,
+    draw_outline = false,
+    draw_shades = false,
+    use_xft = false,
+    lua_load = '~/.conky/brass-lyrics/brass-lyrics.lua',
+    lua_draw_hook_pre = 'main',
+}
+
+conky.text = [[ ]]

@@ -1,0 +1,60 @@
+-- ############################################################
+--  brassviz -- Conky config (Steampunk Sound Visualizer)
+--  Companion to brasspianobar: same 531 grid (dock lands at 500.0),
+--  but parked bottom-RIGHT so the pair brackets the desktop.
+-- ############################################################
+
+local HOME       = os.getenv('HOME') or os.getenv('USERPROFILE') or ''
+local LUA_PATH   = HOME .. '/.conky/brassviz/brassviz.lua'
+
+conky.config = {
+    update_interval       = 0.1,    -- cava feeds 30fps; 0.1 keeps rings responsive
+                                      -- without re-reading the file more often than
+                                      -- the data actually changes.
+    cpu_avg_samples       = 2,
+    net_avg_samples       = 2,
+    double_buffer         = true,
+    no_buffers            = true,
+    text_buffer_size      = 4096,
+    imlib_cache_size      = 0,
+
+    own_window            = true,
+    own_window_type       = 'dock',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_argb_value  = 255,   -- opaque window, matching brass-orrery
+                                     -- (was 0: the corners of the plate disc
+                                     -- stayed transparent and bled wallpaper)
+    own_window_colour      = '000000',
+    own_window_hints       = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_class       = 'conky-brassviz',
+    border_inner_margin    = 0,
+    border_outer_margin    = 0,
+
+    minimum_width         = 531,
+    minimum_height        = 531,
+    maximum_width         = 531,
+
+    alignment             = 'bottom_right',
+    gap_x                 = 14,
+    gap_y                 = 14,
+
+    draw_shades           = false,
+    draw_outline          = false,
+    draw_borders          = false,
+    draw_graph_borders    = false,
+
+    use_xft               = true,
+    font                  = 'DejaVu Sans:size=9',
+    xftalpha              = 0.8,
+    override_utf8_locale  = true,
+    uppercase             = false,
+    use_spacer            = 'left',
+
+    default_color         = 'F4EBD8',
+
+    lua_load              = LUA_PATH,
+    lua_draw_hook_pre     = 'main',
+}
+
+conky.text = [[ ]];

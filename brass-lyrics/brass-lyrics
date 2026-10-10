@@ -1,0 +1,48 @@
+#!/bin/bash
+# brass-lyrics -- start / stop / restart the brass lyrics widget
+# Also manages the LRCLIB fetcher companion (spawned by the renderer
+# itself, but stop() sweeps it too so nothing lingers).
+set -u
+
+DIR="$HOME/.conky/brass-lyrics"
+RC="$DIR/brass-lyricsrc"
+LOG="$DIR/brass-lyrics.log"
+PAT='[c]onky .*brass-lyricsrc'
+FPAT='brass-lyrics/fetch_ly[r]ics'
+
+start() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "brass-lyrics already running"
+        return 0
+    fi
+    setsid conky -d -c "$RC" </dev/null >>"$LOG" 2>&1 &
+    disown
+    echo "brass-lyrics started"
+}
+
+stop() {
+    pkill -f "$PAT" 2>/dev/null
+    pkill -f "$FPAT" 2>/dev/null
+    echo "brass-lyrics stopped"
+}
+
+status() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "brass-lyrics running (pid $(pgrep -f "$PAT" | head -1))"
+    else
+        echo "brass-lyrics not running"
+    fi
+    if pgrep -f "$FPAT" >/dev/null 2>&1; then
+        echo "fetcher running (pid $(pgrep -f "$FPAT" | head -1))"
+    else
+        echo "fetcher not running"
+    fi
+}
+
+case "${1:-start}" in
+    start)   start ;;
+    stop)    stop ;;
+    restart) stop; sleep 1; start ;;
+    status)  status ;;
+    *)       echo "usage: $0 {start|stop|restart|status}"; exit 1 ;;
+esac
