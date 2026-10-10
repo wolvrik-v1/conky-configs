@@ -47,13 +47,9 @@ see [`ATTRIBUTION.md`](ATTRIBUTION.md) for credits.
 
 ### Brass family
 
-orrery-brass · brass-sysmon · brass-lyrics · brasspianobar · brassviz
+All five together:
 
-![orrery-brass](orrery-brass/screenshot.png)
-![brass-sysmon](brass-sysmon/screenshot.png)
-![brass-lyrics](brass-lyrics/screenshot.png)
-![brasspianobar](brasspianobar/screenshot.png)
-![brassviz](brassviz/screenshot.png)
+![brass family](orrery-brass/screenshot.png)
 
 ### clockwork-alchemist
 

@@ -74,6 +74,9 @@ add_excl 'fonts'
 add_excl 'wallpapers'
 add_excl 'screenshot.png'
 add_excl 'screenshot-*.png'
+# Family screenshots (e.g. CyberdeckFamily-*.png) live in a theme dir but are
+# repo-owned imagery, not live widget files -- exclude so --delete can't strip them.
+add_excl '*Family*.png'
 
 add_excl 'README.md'
 add_excl 'ATTRIBUTION.md'
