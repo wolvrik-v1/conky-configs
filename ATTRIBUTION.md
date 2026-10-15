@@ -20,7 +20,7 @@ guessed at.
 
 ### Not bundled
 
-Both fonts below are **linked, not shipped**: neither carries a redistribution
+The fonts below are **linked, not shipped**: none carries a redistribution
 grant, so bundling them in a public repository would be redistribution without
 permission.
 
@@ -31,6 +31,14 @@ permission.
 - Its files' own `name` table reads:
   `Font Typeface: DS-Digital. Created by Dusit Supasawat , DS-Font 1998. All Rights Reserved`
 - Obtain it from the author's listing: <https://www.dafont.com/ds-digital.font>
+
+**Santana** — by Manfred Klein (2004)
+
+- Used by `WindingRings` for its date line (the same font the original 2009
+  widget used).
+- Distributed as freeware via dafont; no redistribution grant was found, so it
+  is linked rather than bundled. Obtain it from the author's listing:
+  <https://www.dafont.com/santana.font>
 
 **HOOGE 05_53 / 05_54 / 05_55** — by Craig Kroeger (eng) & Nikolay Dubina (rus)
 
@@ -62,11 +70,13 @@ monospace dial if HOOGE is missing; `DejaVu Sans Mono` is the closest stand-in.
 | `etched/wallpapers/tea-hd-wallpaper.jpg` | etched | provenance unknown — the author does not recall its source |
 | `clockwork-alchemist/wallpapers/wallpaper-steampunk3.jpg` | clockwork-alchemist | Generated for this theme by the author with Google's image generator |
 | `cyber-deck/wallpapers/Official_Cyberpunk_Control_Tower.jpg` | cyber family | AI-generated cyberpunk control-tower scene obtained from Google's image generator; the author sharpened a local copy for use as the desktop wallpaper |
+| `WindingRings/wallpapers/wallhaven-d6pjk3.png` | WindingRings | AI-generated forest scene, uploaded to [wallhaven.cc](https://wallhaven.cc/w/d6pjk3) by **Alx**; the uploader provided no original source |
 
-Of the seven bundled wallpapers: three are AI-generated artwork the author made
-for the theme they belong to, one is credited to **skyvictor79** via Pixabay, and
-three have no known origin. If you ever trace them, update this table — an
-honest "unknown" is better than a guess.
+Of the eight bundled wallpapers: three are AI-generated artwork the author made
+for the theme they belong to, one is an AI-generated scene obtained via
+wallhaven.cc (credited to its uploader **Alx**), one is credited to
+**skyvictor79** via Pixabay, and three have no known origin. If you ever trace
+them, update this table — an honest "unknown" is better than a guess.
 
 Note on the cyber wallpaper: the file bundled here is the unmodified image as
 downloaded. The copy actually set as the desktop background was run through a
@@ -81,6 +91,35 @@ repository are original work, except:
 - **bionic** reimplements the well centres and sector-ring geometry of the
   original 2010 "Steel Conky" by Mucas / wlourf. The original plate artwork is
   preserved unmodified as `bg_ORIGINAL-2010.png`.
+- **WindingRings** reimplements two classic 2009 Conky widgets by **Alison Pitt
+  (londonali1010)**: the "Air Clock" glass clock face (itself modelled on KDE
+  4.3's "Air" clock) and the "Ring" widget, drawn here as the alternating
+  "winding" meters. Her 2009 sources credited in the originals are "Conky Widgets
+  by londonali1010 (2009)" and "Air Clock by Alison Pitt (2009)". Those works were
+  published on DeviantArt under
+  [**CC BY-NC-SA 3.0**](https://creativecommons.org/licenses/by-nc-sa/3.0/)
+  (Attribution-NonCommercial-ShareAlike). The Lua here is an independent
+  single-file rewrite of the *design* (the clock face, the S-curve meter layout),
+  not a copy of her code — but it is a derivative *of the design*, so **this
+  theme is distributed under her CC BY-NC-SA 3.0 terms, not the repository's MIT
+  licence.** See the licence note below.
+
+## Licence note — WindingRings
+
+The rest of this repository is released under the MIT licence (see
+[`LICENSE`](LICENSE)). **`WindingRings/` is the one exception.** It reimplements a
+design by Alison Pitt (londonali1010) published under
+**[CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)**
+(Attribution-NonCommercial-ShareAlike 3.0), which is incompatible with MIT:
+
+- **Attribution** — credit is given in the widget header and in the Code section
+  above.
+- **NonCommercial** — you may not use this theme commercially.
+- **ShareAlike** — derivative works of it must also be released under
+  CC BY-NC-SA 3.0.
+
+If you need an MIT-licensed version, build a fresh layout rather than reusing
+this one.
 
 ## Screenshots
 

@@ -5,7 +5,7 @@ A collection of handcrafted **Lua/Cairo** Conky themes (modern `conky.config = {
 Free to use, modify, and share.
 
 > Several of these were built together with AI assistants over many live-tuning
-> sessions, from original community designs, and **three of the bundled
+> sessions, from original community designs, and **four of the bundled
 > wallpapers are AI-generated artwork**. Full per-file provenance — source
 > designs, AI contributions, third-party fonts and artwork — is recorded in
 > [`ATTRIBUTION.md`](ATTRIBUTION.md).
@@ -32,6 +32,7 @@ original brand names.
 | **clockwidget** | Classics | Interactive analog clock + month calendar (click the LED to flip clock/calendar, auto-returns after 10 s). Original jpope 2010 face, modernised. |
 | **clockwork-alchemist** | Classics | Steampunk wall clock: skeleton dial with gear train, brass steam pipes, copper boiler, PSI dial, thermometer, CPU/RAM gauges, six readout plaques. 100% procedural Cairo. |
 | **bionic** | Classics | Classic "Steel Conky by Mucas V2.0" plate (243x887 artwork) with sector-ring gauges: CPU / MEM / WLAN / TIME / BATTERY / VOLUME. |
+| **WindingRings** | Classics | Glass "Air Clock" + live date rule + now-playing line, with six alternating semicircle "winding" meters down the right edge (CPU / MEM / FS root + home / Wi-Fi speed + quality). A single-file modern reimplementation of londonali1010's 2009 Air Clock and Ring widgets. |
 | **orrery-brass** | **Brass** | Mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
 | **brass-sysmon** | **Brass** | Round brass system monitor: four clock-style speedometer dials (CPU / MEM / NET / TEMP) around a centre LOAD / NET strip, `MK.I` maker's mark. |
 | **brass-lyrics** | **Brass** | Round brass lyrics display: karaoke-synced lyrics fetched live from LRCLIB, title/artist curved on the bezel, progress sweep, graceful fetching/offline fallbacks. |
@@ -65,6 +66,10 @@ All five together:
 
 ![bionic](bionic/screenshot.png)
 
+### WindingRings
+
+![WindingRings](WindingRings/screenshot.png)
+
 ### etched · etched-pianobar · etched-weather
 
 All three together:
@@ -90,7 +95,7 @@ All three together, running against the theme wallpaper:
    ```bash
    git clone https://github.com/wolvrik-v1/conky-configs.git ~/conky-configs
    # install the ~/.conky-style themes (clocks, monitors, radar and the cyber deck)
-   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass,brasspianobar,brassviz,brass-sysmon,brass-lyrics} ~/.conky/
+   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,WindingRings,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass,brasspianobar,brassviz,brass-sysmon,brass-lyrics} ~/.conky/
    # install the ~/.config themes (pianobar players + weather API widget)
    cp -r ~/conky-configs/{metal-pianobar,etched-pianobar,etched-weather} ~/.config/
    ```
@@ -127,6 +132,7 @@ Fonts used across the set:
 | **HOOGE 05_54/53** | **not bundled** — no redistribution grant. Needed by `bionic`; get it from <https://www.dafont.com/craig-kroeger.d840> |
 | **DejaVu Sans Mono** | ships with most Linux distros |
 | **DS-Digital** | **not bundled** — shareware, no redistribution grant. Get it from <https://www.dafont.com/ds-digital.font> |
+| **Santana** | **not bundled** — freeware, no redistribution grant. Needed by `WindingRings` for the date line; get it from <https://www.dafont.com/santana.font> |
 
 Nothing breaks if a font is missing: the widgets reference fonts by family name
 and fontconfig substitutes a default face. See

@@ -1,0 +1,35 @@
+-- WindingRings: glass "Air Clock" + date + winding S-curve meters
+-- Original 2009 designs by Alison Pitt (londonali1010); modern reimplementation 2026.
+-- Run with:  conky -c ~/.conky/WindingRings/WindingRingsrc   (or ./WindingRings start)
+
+conky.config = {
+    background = true,
+    update_interval = 1,
+    double_buffer = true,
+    cpu_avg_samples = 2,
+
+    own_window = true,
+    own_window_type = 'dock',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_argb_value = 0,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+
+    alignment = 'top_left',
+    gap_x = 0,
+    gap_y = 0,
+    -- set these to the size of the monitor the conky should sit on
+    minimum_width = 1920,
+    minimum_height = 1080,
+    maximum_width = 1920,
+
+    draw_shades = false,
+    draw_outline = false,
+    draw_borders = false,
+    draw_graph_borders = false,
+
+    lua_load = '~/.conky/WindingRings/WindingRings.lua',
+    lua_draw_hook_pre = 'main',
+}
+
+conky.text = [[ ]]

@@ -34,6 +34,7 @@ brasspianobar		$HOME/.conky/brasspianobar
 brassviz		$HOME/.conky/brassviz
 brass-sysmon		$HOME/.conky/brass-sysmon
 brass-lyrics		$HOME/.conky/brass-lyrics
+WindingRings		$HOME/.conky/WindingRings
 "
 
 EXCL=()
