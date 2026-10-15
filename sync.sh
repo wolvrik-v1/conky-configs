@@ -79,8 +79,13 @@ add_excl 'screenshot-*.png'
 # repo-owned imagery, not live widget files -- exclude so --delete can't strip them.
 add_excl '*Family*.png'
 
+add_excl 'README'
 add_excl 'README.md'
 add_excl 'ATTRIBUTION.md'
+
+# Shipped theme zips are committed alongside their theme, so protect them from
+# rsync --delete (the live widget dir never contains a zip).
+add_excl '*.zip'
 
 MODE="dry-run"
 [ "${1:-}" = "--apply" ] && { MODE="apply"; shift; }
@@ -104,6 +109,8 @@ printf '%s\n' "$PAIRS" | while IFS=$'\t' read -r name src; do
   if [ "$MODE" = "apply" ]; then
     rsync -a --delete "${EXCL[@]}" "$src/" "$dest/"
     echo "synced: $name -> $dest/"
+    # Keep a shipped theme's zip fresh: rebuild it if one already ships.
+    [ -f "$dest/$name-conky.zip" ] && "$ROOT/mkzip.sh" "$name"
   else
     echo "--- dry-run: $name ---"
     rsync -ainv --delete "${EXCL[@]}" "$src/" "$dest/"

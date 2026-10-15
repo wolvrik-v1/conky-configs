@@ -24,8 +24,10 @@ openweather.key
 clockswitch
 fav_check.png
 
-# Package artifacts
+# Package artifacts. Shipped theme zips (committed next to their theme) are the
+# exception; everything else is ignored.
 *.zip
+!*/*-conky.zip
 *.tar.gz
 
 # Third-party design references (kept locally, not redistributed)

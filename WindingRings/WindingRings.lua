@@ -10,8 +10,10 @@
   Original designs and widget framework (c) 2009 Alison Pitt / londonali1010
   (http://www.deviantart.com/londonali1010), released under CC BY-NC-SA 3.0.
   This file is an independent reimplementation in a single script, with a
-  live date rule, now-playing text and text labels; reimplemented 2026 with
-  an AI assistant (Claude).
+  live date rule, now-playing text and text labels.
+
+  Reimplemented 2026 by Wolvrik in collaboration with AI assistants
+  (Anthropic Claude and opencode Big Pickle).
 
   Font: the date uses "Santana" (c) Manfred Klein, 2004 -- the same font the
   original widget used. If Santana is not installed, fontconfig substitutes a

@@ -102,7 +102,8 @@ repository are original work, except:
   single-file rewrite of the *design* (the clock face, the S-curve meter layout),
   not a copy of her code — but it is a derivative *of the design*, so **this
   theme is distributed under her CC BY-NC-SA 3.0 terms, not the repository's MIT
-  licence.** See the licence note below.
+  licence.** See the licence note below. Reimplemented 2026 by **Wolvrik** in
+  collaboration with AI assistants (Anthropic Claude and opencode Big Pickle).
 
 ## Licence note — WindingRings
 
