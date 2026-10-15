@@ -10,6 +10,9 @@ Free to use, modify, and share.
 > designs, AI contributions, third-party fonts and artwork — is recorded in
 > [`ATTRIBUTION.md`](ATTRIBUTION.md).
 
+**Downloads:** themes that ship a ready-to-run package have a **zip download**
+link in the table below (the zip lives inside that theme's folder).
+
 ## Themes
 
 The themes are organised into **families** that share a visual language. The
@@ -32,7 +35,7 @@ original brand names.
 | **clockwidget** | Classics | Interactive analog clock + month calendar (click the LED to flip clock/calendar, auto-returns after 10 s). Original jpope 2010 face, modernised. |
 | **clockwork-alchemist** | Classics | Steampunk wall clock: skeleton dial with gear train, brass steam pipes, copper boiler, PSI dial, thermometer, CPU/RAM gauges, six readout plaques. 100% procedural Cairo. |
 | **bionic** | Classics | Classic "Steel Conky by Mucas V2.0" plate (243x887 artwork) with sector-ring gauges: CPU / MEM / WLAN / TIME / BATTERY / VOLUME. |
-| **WindingRings** | Classics | Glass "Air Clock" + live date rule + now-playing line, with six alternating semicircle "winding" meters down the right edge (CPU / MEM / FS root + home / Wi-Fi speed + quality). A single-file modern reimplementation of londonali1010's 2009 Air Clock and Ring widgets. |
+| **WindingRings** | Classics | Glass "Air Clock" + live date rule + now-playing line, with six alternating semicircle "winding" meters down the right edge (CPU / MEM / FS root + home / Wi-Fi speed + quality). A single-file modern reimplementation of londonali1010's 2009 Air Clock and Ring widgets. [**Download zip**](WindingRings/WindingRings-conky.zip) |
 | **orrery-brass** | **Brass** | Mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
 | **brass-sysmon** | **Brass** | Round brass system monitor: four clock-style speedometer dials (CPU / MEM / NET / TEMP) around a centre LOAD / NET strip, `MK.I` maker's mark. |
 | **brass-lyrics** | **Brass** | Round brass lyrics display: karaoke-synced lyrics fetched live from LRCLIB, title/artist curved on the bezel, progress sweep, graceful fetching/offline fallbacks. |
