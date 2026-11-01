@@ -28,8 +28,21 @@ CACHE_PATH = CACHE_DIR / "etched_weather.lua"
 ERROR_PATH = CACHE_DIR / "etched_weather.error"
 KEY_PATH = WIDGET_DIR / "openweather.key"
 
+# The key lives beside this script in ~/.conky/etched-weather, not in the old
+# ~/.config/etched-weather location, so try every place it has ever lived.
+KEY_CANDIDATES = (
+    KEY_PATH,
+    Path(__file__).resolve().parent / "openweather.key",
+    HOME / ".conky" / "etched-weather" / "openweather.key",
+    HOME / ".conky" / "Etched_Colors_Weather" / "openweather.key",
+)
+
 LATITUDE = float(os.environ.get("OPENWEATHER_LAT", "40.519444"))
 LONGITUDE = float(os.environ.get("OPENWEATHER_LON", "-80.008611"))
+
+# OpenWeather reverse-geocodes the coordinates and may name a neighbouring
+# place ("West View" for the Ross Township coords), so the label is ours.
+LOCATION_NAME = os.environ.get("OPENWEATHER_LOCATION", "Ross Township").strip()
 
 CURRENT_URL = "https://api.openweathermap.org/data/2.5/weather"
 FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast"
@@ -69,16 +82,30 @@ def read_api_key():
     if environment_key:
         return environment_key
 
-    key_path = Path(
-        os.environ.get("OPENWEATHER_KEY_FILE", str(KEY_PATH))
-    ).expanduser()
+    override = os.environ.get("OPENWEATHER_KEY_FILE", "").strip()
 
-    try:
-        text = key_path.read_text(
-            encoding="utf-8",
-            errors="replace",
-        )
-    except OSError:
+    if override:
+        candidates = (Path(override).expanduser(),)
+    else:
+        candidates = KEY_CANDIDATES
+
+    text = None
+
+    for key_path in candidates:
+        try:
+            text = key_path.read_text(
+                encoding="utf-8",
+                errors="replace",
+            )
+        except OSError:
+            continue
+
+        if text.strip():
+            break
+
+        text = None
+
+    if text is None:
         return None
 
     for raw_line in text.splitlines():
@@ -531,7 +558,7 @@ def build_data(current_payload, forecast_payload):
     if current["pop"] is None:
         current["pop"] = daily[0]["pop"] if daily else 0.0
 
-    location = clean(current_payload.get("name"))
+    location = LOCATION_NAME or clean(current_payload.get("name"))
 
     return {
         "ok": True,
