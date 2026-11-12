@@ -43,18 +43,58 @@ the panel edge.
 
 ## Requirements
 
-- **Conky 1.12.x** with Lua + Cairo support.
-- **X11** (not Wayland).
-- **pianobar** for playback.
-- The **pianobar → Conky status bridge**, which normalises pianobar's event files
-  into `~/.cache/conky/pianobar-widget.status` (one line:
-  `title|artist|album|duration|position|state`). Keep
-  `~/.config/pianobar-widget/pianobar_control.py` running and alive (the bundled
-  `~/.config/pianobar-widget/ensure_bridge.sh` helper is idempotent and MCP
-  friendly — run it from autostart and/or a cron watchdog). Without the bridge the
-  panel shows *No Music Playing*.
-- **ImageMagick** (`convert`) for the one-time cover-art resize.
-- Optional: **pywal** for the wallpaper-matched accent colour.
+| Needed for | What you need |
+| --- | --- |
+| The widget itself | **Conky 1.12.x** with Lua + Cairo support, on **X11** (not Wayland) |
+| Playback + metadata | **pianobar** (writes `~/.config/pianobar/{title,artist,album,coverArt.jpg}`) |
+| The track/artist/album lines | **Python 3** and the **bundled status bridge** (below) |
+| Cover art | **ImageMagick** (`convert`) — one-time resize, then cached |
+| Wallpaper accent | Optional **pywal** |
+| Fonts | **Ubuntu** (bundled elsewhere in this repo); **DS-Digital** optional (not bundled) |
+
+### The status bridge (required)
+
+Pianobar writes loose event files; Conky needs one tidy line. The bridge bundled in
+`scripts/` does that, writing `~/.cache/conky/pianobar-widget.status`:
+
+```
+title|artist|album|duration|position|state
+```
+
+Start it once and keep it alive:
+
+```sh
+~/.conky/WindingRingsColorPianobar/scripts/ensure_bridge.sh
+```
+
+`ensure_bridge.sh` starts `scripts/pianobar_control.py` only if it isn't already
+running, so it is safe to run as often as you like. The usual setup is a login
+autostart entry plus a once-a-minute cron watchdog:
+
+```cron
+@reboot  $HOME/.conky/WindingRingsColorPianobar/scripts/ensure_bridge.sh
+* * * *  $HOME/.conky/WindingRingsColorPianobar/scripts/ensure_bridge.sh
+```
+
+The bridge is flock-guarded, so a second copy exits by itself; it logs to
+`~/.cache/conky/pianobar-bridge.log`. **Without it the panel shows *No Music
+Playing*.** If you already run `~/.config/pianobar-widget/pianobar_control.py` for
+other Conky widgets, that is the same program — one bridge is enough for all of
+them, and `ensure_bridge.sh` will detect it and do nothing.
+
+### Wallpaper accent with pywal (optional)
+
+The panel tints itself from the most vibrant colour in `~/.cache/wal/colors.json`.
+Generate that palette from any image:
+
+```sh
+wal -i ~/Pictures/your-wallpaper.jpg
+```
+
+Install `pywal` from your distro (`pywal` on Arch, `python-pywal` on Debian/Ubuntu)
+or with `pipx install pywal`. Without it everything still works — the accent is
+just the default cyan `#00fff9`. Note that pywal applies the palette desktop-wide,
+so your terminal colours change too; this widget only reads the file.
 
 ## Install
 

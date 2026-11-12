@@ -76,12 +76,30 @@ Nothing breaks without pywal — you just get the default cyan.
 
 ## Requirements
 
-- **Conky 1.12.x** with Lua + Cairo support.
-- **X11** (not Wayland).
-- Optional: **pianobar** for the now-playing line (artist/title/album files in
-  `~/.config/pianobar/`).
-- Optional: a **wireless interface** for the Spd / Qual meters.
-- Optional: **pywal** for wallpaper-matched accent colour.
+| Needed for | What you need |
+| --- | --- |
+| The widget itself | **Conky 1.12.x** with Lua + Cairo support, on **X11** (not Wayland) |
+| Now-playing line | Optional **pianobar** (writes `~/.config/pianobar/{title,artist,album}`) |
+| Spd / Qual meters | Optional **wireless interface** (auto-detected unless `WIFI` is set) |
+| Wallpaper accent | Optional **pywal** |
+| Fonts | **Ubuntu** + **DejaVu Sans**; **Santana** optional (not bundled) |
+
+### Wallpaper accent with pywal (optional)
+
+The hands and meter arcs tint themselves from the most vibrant colour in
+`~/.cache/wal/colors.json`. Generate that palette from any image:
+
+```sh
+wal -i ~/Pictures/your-wallpaper.jpg
+```
+
+Install `pywal` from your distro (`pywal` on Arch, `python-pywal` on Debian/Ubuntu)
+or with `pipx install pywal`. Without it everything still works — the accent is
+just the default cyan `#00fff9`. Note that pywal applies the palette desktop-wide,
+so your terminal colours change too; this widget only reads the file.
+
+Everything else is optional: with no pianobar and no wireless interface you still
+get the clock, date and CPU/MEM/FS meters.
 
 ## Install
 
