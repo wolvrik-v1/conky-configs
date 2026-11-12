@@ -35,6 +35,8 @@ brassviz		$HOME/.conky/brassviz
 brass-sysmon		$HOME/.conky/brass-sysmon
 brass-lyrics		$HOME/.conky/brass-lyrics
 WindingRings		$HOME/.conky/WindingRings
+WindingRingsColor		$HOME/.conky/WindingRingsColor
+WindingRingsColorPianobar		$HOME/.conky/WindingRingsColorPianobar
 "
 
 EXCL=()
@@ -46,6 +48,7 @@ add_excl '*.bak.*'
 add_excl '*.backup*'
 add_excl '*.before-*'
 add_excl '*.old'
+add_excl '*.lua-old'
 add_excl '*.orig'
 add_excl '*.tmp'
 add_excl '*~'

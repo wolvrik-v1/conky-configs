@@ -36,11 +36,23 @@ original brand names.
 | **clockwork-alchemist** | Classics | Steampunk wall clock: skeleton dial with gear train, brass steam pipes, copper boiler, PSI dial, thermometer, CPU/RAM gauges, six readout plaques. 100% procedural Cairo. |
 | **bionic** | Classics | Classic "Steel Conky by Mucas V2.0" plate (243x887 artwork) with sector-ring gauges: CPU / MEM / WLAN / TIME / BATTERY / VOLUME. |
 | **WindingRings** | Classics | Glass "Air Clock" + live date rule + now-playing line, with six alternating semicircle "winding" meters down the right edge (CPU / MEM / FS root + home / Wi-Fi speed + quality). A single-file modern reimplementation of londonali1010's 2009 Air Clock and Ring widgets. [**Download zip**](WindingRings/WindingRings-conky.zip) |
+| **WindingRingsColor** | Classics | Full-screen colour-field take on WindingRings: glass "Air Clock", date rule and now-playing line, with six large alternating winding meters (CPU / MEM / FS root + home / Wi-Fi speed + quality). Adopts your [pywal](https://github.com/dylanaraps/pywal) accent colour. [**Download zip**](WindingRingsColor/WindingRingsColor-conky.zip) |
+| **WindingRingsColorPianobar** | Classics | Companion pianobar panel in the same style: album art, track / artist / album, progress bar, elapsed / total and play state, on a 440x270 `bottom_left` dock. [**Download zip**](WindingRingsColorPianobar/WindingRingsColorPianobar-conky.zip) |
 | **orrery-brass** | **Brass** | Mechanical solar-system clock: 3D tumbling orbit rings, planets riding the time (Mercury = seconds, Venus = minutes, Earth = hours, Mars = day-of-year), true lunar phase at Earth, calendar ring with month letters + date hand, HUD plaques. 100% procedural Cairo, brass on near-black. |
 | **brass-sysmon** | **Brass** | Round brass system monitor: four clock-style speedometer dials (CPU / MEM / NET / TEMP) around a centre LOAD / NET strip, `MK.I` maker's mark. |
 | **brass-lyrics** | **Brass** | Round brass lyrics display: karaoke-synced lyrics fetched live from LRCLIB, title/artist curved on the bezel, progress sweep, graceful fetching/offline fallbacks. |
 | **brasspianobar** | **Brass** | Round brass now-playing widget for pianobar: album art in the well, track / artist / album, progress sweep, pause/play state. |
 | **brassviz** | **Brass** | Round brass audio spectrum visualiser driven by CAVA: twelve radial bands, a live level rail and peak-hold markers. |
+
+> **Two notes on the WindingRings colour pair.** They are meant to own a whole
+> screen: the clock and rings are a single full-screen `1920x1080` dock window
+> pinned at the top-left, sized to the primary monitor. While they run, clicks on
+> the main screen land on the Conky window instead of what is behind it — treat it
+> as a dedicated dashboard screen (or shrink `minimum_width`/`minimum_height` in
+> the `.conf` to suit your layout). Both are **X11 only**; they will not work under
+> Wayland. If you use **pywal**, they read `~/.cache/wal/colors.json` and adopt
+> your current accent colour — which also means the palette you generate recolours
+> your terminal emulators, an unexpected side effect the author ended up loving.
 
 ## Screenshots
 
@@ -73,6 +85,15 @@ All five together:
 
 ![WindingRings](WindingRings/screenshot.png)
 
+### WindingRingsColor · WindingRingsColorPianobar
+
+Both running together over the bundled `ParisColorful.jpg` wallpaper (the second
+shot is a crop of the pianobar panel in the bottom-left corner):
+
+![WindingRingsColor](WindingRingsColor/screenshot.png)
+
+![WindingRingsColorPianobar](WindingRingsColorPianobar/screenshot.png)
+
 ### etched · etched-pianobar · etched-weather
 
 All three together:
@@ -92,13 +113,13 @@ All three together, running against the theme wallpaper:
    sudo apt install conky-all lua5.1 fonts-font-awesome
    ```
    A few themes need extra runtime deps (`pianobar`, `cava`, `pactl`, `python3`)
-   or an API key. Only `bionic` and `clockwidget` ship a README of their own, so
-   check a theme's files before assuming it runs standalone.
+   or an API key. `bionic`, `clockwidget` and the three WindingRings themes ship a
+   README of their own, so check a theme's files before assuming it runs standalone.
 2. **Clone this repo**:
    ```bash
    git clone https://github.com/wolvrik-v1/conky-configs.git ~/conky-configs
    # install the ~/.conky-style themes (clocks, monitors, radar and the cyber deck)
-   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,WindingRings,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass,brasspianobar,brassviz,brass-sysmon,brass-lyrics} ~/.conky/
+   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,WindingRings,WindingRingsColor,WindingRingsColorPianobar,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass,brasspianobar,brassviz,brass-sysmon,brass-lyrics} ~/.conky/
    # install the ~/.config themes (pianobar players + weather API widget)
    cp -r ~/conky-configs/{metal-pianobar,etched-pianobar,etched-weather} ~/.config/
    ```
@@ -134,8 +155,8 @@ Fonts used across the set:
 | **Ubuntu** | bundled — © 2010 Canonical Ltd., [Ubuntu Font Licence 1.0](etched/fonts/LICENSE-UFL-1.0.txt) |
 | **HOOGE 05_54/53** | **not bundled** — no redistribution grant. Needed by `bionic`; get it from <https://www.dafont.com/craig-kroeger.d840> |
 | **DejaVu Sans Mono** | ships with most Linux distros |
-| **DS-Digital** | **not bundled** — shareware, no redistribution grant. Get it from <https://www.dafont.com/ds-digital.font> |
-| **Santana** | **not bundled** — freeware, no redistribution grant. Needed by `WindingRings` for the date line; get it from <https://www.dafont.com/santana.font> |
+| **DS-Digital** | **not bundled** — shareware, no redistribution grant. Needed by `WindingRingsColorPianobar` for its elapsed/total digits; get it from <https://www.dafont.com/ds-digital.font> |
+| **Santana** | **not bundled** — freeware, no redistribution grant. Needed by `WindingRings` and `WindingRingsColor` for the date line; get it from <https://www.dafont.com/santana.font> |
 
 Nothing breaks if a font is missing: the widgets reference fonts by family name
 and fontconfig substitutes a default face. See

@@ -71,11 +71,13 @@ monospace dial if HOOGE is missing; `DejaVu Sans Mono` is the closest stand-in.
 | `clockwork-alchemist/wallpapers/wallpaper-steampunk3.jpg` | clockwork-alchemist | Generated for this theme by the author with Google's image generator |
 | `cyber-deck/wallpapers/Official_Cyberpunk_Control_Tower.jpg` | cyber family | AI-generated cyberpunk control-tower scene obtained from Google's image generator; the author sharpened a local copy for use as the desktop wallpaper |
 | `WindingRings/wallpapers/wallhaven-d6pjk3.png` | WindingRings | AI-generated forest scene, uploaded to [wallhaven.cc](https://wallhaven.cc/w/d6pjk3) by **Alx**; the uploader provided no original source |
+| `WindingRingsColor{,Pianobar}/wallpapers/ParisColorful.jpg` | WindingRingsColor · WindingRingsColorPianobar | provenance unknown — the author does not recall its source |
+| `WindingRingsColor{,Pianobar}/wallpapers/IslandWarmEvening.jpg` | WindingRingsColor · WindingRingsColorPianobar | provenance unknown — the author does not recall its source |
 
-Of the eight bundled wallpapers: three are AI-generated artwork the author made
+Of the ten bundled wallpapers: three are AI-generated artwork the author made
 for the theme they belong to, one is an AI-generated scene obtained via
 wallhaven.cc (credited to its uploader **Alx**), one is credited to
-**skyvictor79** via Pixabay, and three have no known origin. If you ever trace
+**skyvictor79** via Pixabay, and five have no known origin. If you ever trace
 them, update this table — an honest "unknown" is better than a guess.
 
 Note on the cyber wallpaper: the file bundled here is the unmodified image as
@@ -100,16 +102,27 @@ repository are original work, except:
   [**CC BY-NC-SA 3.0**](https://creativecommons.org/licenses/by-nc-sa/3.0/)
   (Attribution-NonCommercial-ShareAlike). The Lua here is an independent
   single-file rewrite of the *design* (the clock face, the S-curve meter layout),
-  not a copy of her code — but it is a derivative *of the design*, so **this
-  theme is distributed under her CC BY-NC-SA 3.0 terms, not the repository's MIT
-  licence.** See the licence note below. Reimplemented 2026 by **Wolvrik** in
-  collaboration with AI assistants (Anthropic Claude and opencode Big Pickle).
+   not a copy of her code — but it is a derivative *of the design*, so **this
+   theme is distributed under her CC BY-NC-SA 3.0 terms, not the repository's MIT
+   licence.** See the licence note below. Reimplemented 2026 by **Wolvrik** in
+   collaboration with AI assistants (Anthropic Claude and opencode Big Pickle).
+- **WindingRingsColor** and **WindingRingsColorPianobar** continue that same
+  londonali1010-derived design lineage. `WindingRingsColor` reuses the *Air Clock*
+  glass face and the alternating "winding" meter layout on a colour field, with
+  the accent sampled from a pywal palette (`~/.cache/wal/colors.json`). The
+  Pianobar companion is a separate now-playing panel: it reads the shared status
+  line written by the user's own `~/.config/pianobar-widget/` bridge
+  (`pianobar_control.py`) and renders `~/.config/pianobar/coverArt.jpg`, caching
+  a rounded copy through ImageMagick `convert`. Both reimplemented 2026 by
+  **Wolvrik** in collaboration with AI assistants (Anthropic Claude and opencode
+  Big Pickle), and both inherit the same licence terms for their Lua.
 
-## Licence note — WindingRings
+## Licence note — the WindingRings themes
 
 The rest of this repository is released under the MIT licence (see
-[`LICENSE`](LICENSE)). **`WindingRings/` is the one exception.** It reimplements a
-design by Alison Pitt (londonali1010) published under
+[`LICENSE`](LICENSE)). **`WindingRings/`, `WindingRingsColor/` and
+`WindingRingsColorPianobar/` are the exceptions.** They reimplement or derive
+from a design by Alison Pitt (londonali1010) published under
 **[CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)**
 (Attribution-NonCommercial-ShareAlike 3.0), which is incompatible with MIT:
 

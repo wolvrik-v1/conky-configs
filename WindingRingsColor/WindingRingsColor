@@ -1,0 +1,40 @@
+#!/bin/bash
+# WindingRingsColor -- start / stop / restart the WindingRingsColor conky
+# (glass "Air Clock" + date + winding S-curve meters; conky-only, no companion processes)
+set -u
+
+DIR="$HOME/.conky/WindingRingsColor"
+RC="$DIR/WindingRingsColor.conf"
+LOG="$DIR/WindingRingsColor.log"
+PAT='[c]onky .*WindingRingsColor\.conf'
+
+start() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "WindingRingsColor already running"
+        return 0
+    fi
+    setsid conky -d -c "$RC" </dev/null >>"$LOG" 2>&1 &
+    disown
+    echo "WindingRingsColor started"
+}
+
+stop() {
+    pkill -f "$PAT" 2>/dev/null
+    echo "WindingRingsColor stopped"
+}
+
+status() {
+    if pgrep -f "$PAT" >/dev/null 2>&1; then
+        echo "WindingRingsColor running (pid $(pgrep -f "$PAT" | head -1))"
+    else
+        echo "WindingRingsColor not running"
+    fi
+}
+
+case "${1:-start}" in
+    start)   start ;;
+    stop)    stop ;;
+    restart) stop; sleep 1; start ;;
+    status)  status ;;
+    *)       echo "usage: $0 {start|stop|restart|status}"; exit 1 ;;
+esac
