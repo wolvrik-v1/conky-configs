@@ -1,0 +1,52 @@
+#!/bin/bash
+set -u
+
+DIR="$HOME/.conky/Japan"
+LOG="$DIR/Japan.log"
+PAT='[c]onky .*Japan/japan_.*\.conf'
+RCS=(
+    "$DIR/japan_dark/japan_dark_jump_clock/japan_dark_jump_clock.conf"
+    "$DIR/japan_dark/japan_dark_pianobar/japan_dark_pianobar.conf"
+    "$DIR/japan_light/japan_light_clock/japan_light_clock.conf"
+    "$DIR/japan_light/japan_light_pianobar/japan_light_pianobar.conf"
+)
+
+running() {
+    pgrep -f "[c]onky .*$(basename "$1")" >/dev/null 2>&1
+}
+
+start() {
+    local rc
+    for rc in "${RCS[@]}"; do
+        if running "$rc"; then
+            echo "already running: $(basename "$rc")"
+            continue
+        fi
+        setsid conky -d -c "$rc" </dev/null >>"$LOG" 2>&1 &
+        disown
+        echo "started: $(basename "$rc")"
+    done
+}
+
+stop() {
+    pkill -f "$PAT" 2>/dev/null
+    echo "Japan Conkys stopped"
+}
+
+status() {
+    local pids
+    pids=$(pgrep -f "$PAT" | tr '\n' ' ')
+    if [ -n "$pids" ]; then
+        echo "Japan Conkys running (pids: ${pids% })"
+    else
+        echo "Japan Conkys not running"
+    fi
+}
+
+case "${1:-start}" in
+    start)   start ;;
+    stop)    stop ;;
+    restart) stop; sleep 1; start ;;
+    status)  status ;;
+    *)       echo "usage: $0 {start|stop|restart|status}"; exit 1 ;;
+esac

@@ -37,6 +37,7 @@ brass-lyrics		$HOME/.conky/brass-lyrics
 WindingRings		$HOME/.conky/WindingRings
 WindingRingsColor		$HOME/.conky/WindingRingsColor
 WindingRingsColorPianobar		$HOME/.conky/WindingRingsColorPianobar
+Japan			$HOME/.conky/Japan
 "
 
 EXCL=()
@@ -64,6 +65,7 @@ add_excl '*.checkpoint-*'
 add_excl '*.pre-*'
 add_excl 'debug'
 add_excl 'plaque-mode'
+add_excl 'screenshots/'
 
 # Fonts are repo-owned. They ship in the release zip but are not kept in the
 # live widget dir, so `rsync --delete` would strip them on every sync. rsync

@@ -18,8 +18,9 @@ link in the table below (the zip lives inside that theme's folder).
 The themes are organised into **families** that share a visual language. The
 **Metal** family is a cool black-metal gauge style; **Etched** is a minimal
 Etched-style stat/player/weather set; **Cyber** is green-on-black terminal;
-**Brass** is a round brass-instrument set on near-black. **Classics** keep their
-original brand names.
+**Brass** is a round brass-instrument set on near-black. **Japan** is a Bodhi/Moksha
+wallpaper-and-Conky collection with dark and light clocks and Pianobar panels.
+**Classics** keep their original brand names.
 
 | Theme | Family | Description |
 | :--- | :--- | :--- |
@@ -43,6 +44,7 @@ original brand names.
 | **brass-lyrics** | **Brass** | Round brass lyrics display: karaoke-synced lyrics fetched live from LRCLIB, title/artist curved on the bezel, progress sweep, graceful fetching/offline fallbacks. |
 | **brasspianobar** | **Brass** | Round brass now-playing widget for pianobar: album art in the well, track / artist / album, progress sweep, pause/play state. |
 | **brassviz** | **Brass** | Round brass audio spectrum visualiser driven by CAVA: twelve radial bands, a live level rail and peak-hold markers. |
+| **Japan** | **Japan** | Bodhi/Moksha wallpaper-and-Conky collection: five custom wallpapers with Edje variants, dark Jump Hour and light clocks, and matching dark/light Pianobar now-playing panels. [**Download zip**](Japan/Japan-conky.zip) |
 
 > **Two notes on the WindingRings colour pair.** They are meant to own a whole
 > screen: the clock and rings are a single full-screen `1920x1080` dock window
@@ -106,20 +108,28 @@ All three together, running against the theme wallpaper:
 
 ![cyber family](cyber-deck/CyberdeckFamily-10-03-2026.png)
 
+### Japan
+
+Main pairing from the collection, with five more full-resolution wallpaper/theme
+examples in `Japan/screenshots/`:
+
+![Japan collection](Japan/screenshot.png)
+
 ## Installation
 
 1. **Install dependencies** (Debian/Ubuntu/Mint):
    ```bash
    sudo apt install conky-all lua5.1 fonts-font-awesome
    ```
-   A few themes need extra runtime deps (`pianobar`, `cava`, `pactl`, `python3`)
-   or an API key. `bionic`, `clockwidget` and the three WindingRings themes ship a
-   README of their own, so check a theme's files before assuming it runs standalone.
+   A few themes need extra runtime deps (`pianobar`, `cava`, `pactl`, `python3`,
+   ImageMagick `convert`, optional LuaSocket) or an API key. `bionic`,
+   `clockwidget`, the three WindingRings themes and `Japan` ship a README of
+   their own, so check a theme's files before assuming it runs standalone.
 2. **Clone this repo**:
    ```bash
    git clone https://github.com/wolvrik-v1/conky-configs.git ~/conky-configs
    # install the ~/.conky-style themes (clocks, monitors, radar and the cyber deck)
-   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,WindingRings,WindingRingsColor,WindingRingsColorPianobar,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass,brasspianobar,brassviz,brass-sysmon,brass-lyrics} ~/.conky/
+   cp -r ~/conky-configs/{metal-sysmon,metal-clock,clockwidget,clockwork-alchemist,bionic,WindingRings,WindingRingsColor,WindingRingsColorPianobar,cyber-deck,cyber-radar,cyber-atc,etched,orrery-brass,brasspianobar,brassviz,brass-sysmon,brass-lyrics,Japan} ~/.conky/
    # install the ~/.config themes (pianobar players + weather API widget)
    cp -r ~/conky-configs/{metal-pianobar,etched-pianobar,etched-weather} ~/.config/
    ```
@@ -154,7 +164,9 @@ Fonts used across the set:
 | --- | --- |
 | **Ubuntu** | bundled — © 2010 Canonical Ltd., [Ubuntu Font Licence 1.0](etched/fonts/LICENSE-UFL-1.0.txt) |
 | **HOOGE 05_54/53** | **not bundled** — no redistribution grant. Needed by `bionic`; get it from <https://www.dafont.com/craig-kroeger.d840> |
-| **DejaVu Sans Mono** | ships with most Linux distros |
+| **DejaVu Sans** | ships with most Linux distros; used by `Japan` |
+| **DejaVu Sans Mono** | ships with most Linux distros; used by `Japan` |
+| **Noto Sans CJK JP** | **not bundled** — install from your distro (for example `fonts-noto-cjk`) if the Japanese glyphs in `Japan` are missing |
 | **DS-Digital** | **not bundled** — shareware, no redistribution grant. Needed by `WindingRingsColorPianobar` for its elapsed/total digits; get it from <https://www.dafont.com/ds-digital.font> |
 | **Santana** | **not bundled** — freeware, no redistribution grant. Needed by `WindingRings` and `WindingRingsColor` for the date line; get it from <https://www.dafont.com/santana.font> |
 

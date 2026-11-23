@@ -73,12 +73,18 @@ monospace dial if HOOGE is missing; `DejaVu Sans Mono` is the closest stand-in.
 | `WindingRings/wallpapers/wallhaven-d6pjk3.png` | WindingRings | AI-generated forest scene, uploaded to [wallhaven.cc](https://wallhaven.cc/w/d6pjk3) by **Alx**; the uploader provided no original source |
 | `WindingRingsColor{,Pianobar}/wallpapers/ParisColorful.jpg` | WindingRingsColor · WindingRingsColorPianobar | provenance unknown — the author does not recall its source |
 | `WindingRingsColor{,Pianobar}/wallpapers/IslandWarmEvening.jpg` | WindingRingsColor · WindingRingsColorPianobar | provenance unknown — the author does not recall its source |
+| `Japan/wallpapers/BodhiWhiteGold.jpg` + `.edj` | Japan | Recreated/varied by the author from an old screenshot of the original E17 Japan theme |
+| `Japan/wallpapers/BodhiPlatinum.jpg` + `.edj` | Japan | Recreated/varied by the author from an old screenshot of the original E17 Japan theme |
+| `Japan/wallpapers/BodhiBronzeFade.jpg` + `.edj` | Japan | Recreated/varied by the author from an old screenshot of the original E17 Japan theme |
+| `Japan/wallpapers/BodhiEbonyWood.jpg` + `.edj` | Japan | Recreated/varied by the author from an old screenshot of the original E17 Japan theme |
+| `Japan/wallpapers/BodhiOakWood.jpg` + `.edj` | Japan | Recreated/varied by the author from an old screenshot of the original E17 Japan theme |
 
-Of the ten bundled wallpapers: three are AI-generated artwork the author made
-for the theme they belong to, one is an AI-generated scene obtained via
+Of the fifteen bundled wallpapers: three are AI-generated artwork the author
+made for the theme they belong to, one is an AI-generated scene obtained via
 wallhaven.cc (credited to its uploader **Alx**), one is credited to
-**skyvictor79** via Pixabay, and five have no known origin. If you ever trace
-them, update this table — an honest "unknown" is better than a guess.
+**skyvictor79** via Pixabay, five are author-made recreations/variations
+inspired by the original E17 Japan theme, and five have no known origin. If you
+ever trace them, update this table — an honest "unknown" is better than a guess.
 
 Note on the cyber wallpaper: the file bundled here is the unmodified image as
 downloaded. The copy actually set as the desktop background was run through a
@@ -116,6 +122,12 @@ repository are original work, except:
   a rounded copy through ImageMagick `convert`. Both reimplemented 2026 by
   **Wolvrik** in collaboration with AI assistants (Anthropic Claude and opencode
   Big Pickle), and both inherit the same licence terms for their Lua.
+- **Japan** is a Bodhi/Moksha wallpaper-and-Conky collection inspired by the
+  original E17 Japan theme; its wallpapers were recreated from an old screenshot
+  (see the Wallpapers section above). The four Lua/Cairo configs are the author's
+  own work. The bundled `pianobar_control.py` status bridge is shared with the
+  author's wider Pianobar setup and was not written specifically for this
+  collection.
 
 ## Licence note — the WindingRings themes
 
